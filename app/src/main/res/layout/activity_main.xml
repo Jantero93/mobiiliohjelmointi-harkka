@@ -8,12 +8,53 @@
     tools:context=".MainActivity">
 
     <TextView
+        android:id="@+id/mainMenuHeader_TextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello World!"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginTop="57dp"
+        android:layout_marginBottom="143dp"
+        android:fontFamily="monospace"
+        android:text="@string/mainMenu_header"
+        android:textColor="#DDDDDD"
+        android:textSize="36sp"
+        app:layout_constraintBottom_toTopOf="@+id/menuPlay_Button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <Button
+        android:id="@+id/menuPlay_Button"
+        android:layout_width="185dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="180dp"
+        android:onClick="playButton_clicked"
+        android:text="@string/mainMenuButton_play"
+        app:layout_constraintBottom_toTopOf="@+id/menuSettings_Button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/mainMenuHeader_TextView" />
+
+    <Button
+        android:id="@+id/menuSettings_Button"
+        android:layout_width="185dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="24dp"
+        android:onClick="settingsButton_clicked"
+        android:text="@string/mainMenuButton_settings"
+        app:layout_constraintBottom_toTopOf="@+id/menuStatistics_Button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/menuPlay_Button" />
+
+    <Button
+        android:id="@+id/menuStatistics_Button"
+        android:layout_width="185dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="99dp"
+        android:onClick="statisticButton_clicked"
+        android:text="@string/mainMenuButton_statistics"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/menuSettings_Button" />
 </androidx.constraintlayout.widget.ConstraintLayout>
