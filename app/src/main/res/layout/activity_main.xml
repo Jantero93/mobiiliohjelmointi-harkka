@@ -41,6 +41,8 @@
         android:layout_marginBottom="24dp"
         android:onClick="settingsButton_clicked"
         android:text="@string/mainMenuButton_settings"
+        app:icon="@android:drawable/ic_menu_preferences"
+        app:iconTint="#FFFFFF"
         app:layout_constraintBottom_toTopOf="@+id/menuStatistics_Button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

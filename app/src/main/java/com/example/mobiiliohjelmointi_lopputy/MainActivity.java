@@ -1,5 +1,6 @@
 package com.example.mobiiliohjelmointi_lopputy;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
@@ -19,6 +20,8 @@ public class MainActivity extends AppCompatActivity {
 
     //Start settings activity
     public void settingsButton_clicked(View view) {
+        Intent openSettingsActivityIntent = new Intent( this, SettingsActivity.class );
+        startActivity( openSettingsActivityIntent );
     }
 
     //Start statistics activity
