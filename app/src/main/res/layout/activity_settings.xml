@@ -16,22 +16,42 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical" >
+            android:layout_marginLeft="8sp"
+            android:layout_marginTop="4sp"
+            android:layout_marginRight="8sp"
+            android:contextClickable="false"
+            android:orientation="vertical">
 
             <TextView
                 android:id="@+id/numberOfQuestions_TextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/settings_numberOfQuestion" />
+                android:text="@string/settings_numberOfQuestion"
+                android:textSize="30sp" />
 
             <EditText
                 android:id="@+id/numberOfQuestions_editNumber"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="18sp"
                 android:ems="10"
-                android:hint="@string/rangeOfQuestions"
+                android:hint="@string/rangeOfQuestionsHeader"
+                android:importantForAutofill="no"
                 android:inputType="number"
-                android:importantForAutofill="no" />
+                android:textSize="30sp" />
+
+            <TextView
+                android:id="@+id/selectCategory_TextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/selectCategoryHeader"
+                android:textSize="30sp" />
+
+            <Spinner
+                android:id="@+id/spinner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                />
 
         </LinearLayout>
     </ScrollView>
