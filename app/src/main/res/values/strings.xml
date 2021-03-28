@@ -7,4 +7,6 @@
     <string name="settings_numberOfQuestion">Number of Questions:</string>
     <string name="rangeOfQuestionsHeader">1 - 50</string>
     <string name="selectCategoryHeader">Select Category:</string>
+    <string name="categoryItem">Any Category</string>
+    <string name="selectDifficultyHeader">Select Difficulty:</string>
 </resources>
