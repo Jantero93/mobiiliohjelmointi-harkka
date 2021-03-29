@@ -9,4 +9,7 @@
     <string name="selectCategoryHeader">Select Category:</string>
     <string name="categoryItem">Any Category</string>
     <string name="selectDifficultyHeader">Select Difficulty:</string>
+    <string name="selectedDifficultyItem">Any Difficulty</string>
+    <string name="selectTypeHeader">Select Type:</string>
+    <string name="selectedTypeItem">Any Type</string>
 </resources>
