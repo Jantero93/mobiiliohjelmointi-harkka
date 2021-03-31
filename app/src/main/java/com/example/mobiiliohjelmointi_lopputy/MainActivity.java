@@ -11,6 +11,7 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.StringRequest;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -27,9 +28,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         API_Singleton m_api = API_Singleton.getInstance(this);
+        m_requestQueue = API_Singleton.getInstance(this).getRequestQueue();
         m_categories = new HashMap<String, Integer>();
 
-        m_requestQueue = API_Singleton.getInstance(this).getRequestQueue();
+
         getCategoriesToSettings();
 
     }
@@ -50,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
 
     // Get needed API data on start
     private void getCategoriesToSettings(){
-        //get weather data on json format -->  string request
+        // get categories on json
         StringRequest stringRequest = new StringRequest(Request.Method.GET, getAllCategoriesLink,
                 response -> {
                     Toast.makeText(this.getApplicationContext(), response, Toast.LENGTH_LONG).show();
@@ -67,8 +69,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void parseJsonAllCategories(String JSONresponse) {
+        // parse JSON to hash map, where name key and value correspond id
        try {
             JSONObject root = new JSONObject(JSONresponse);
+            JSONArray trivia_categories = root.getJSONArray("trivia_categories");
+
+            for (int i = 0; i < trivia_categories.length(); i++) {
+                JSONObject category = trivia_categories.getJSONObject(i);
+                m_categories.put(category.getString("name"), category.getInt("id"));
+            }
 
         } catch (JSONException e) {
            e.printStackTrace();
