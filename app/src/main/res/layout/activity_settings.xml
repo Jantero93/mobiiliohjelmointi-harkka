@@ -85,6 +85,16 @@
                 android:text="@string/selectedTypeItem"
                 android:textSize="24sp" />
 
+            <Button
+                android:id="@+id/save_Button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="40sp"
+                android:layout_marginTop="80sp"
+                android:layout_marginRight="40sp"
+                android:onClick="saveSettings"
+                android:text="@string/settingsSaveButton" />
+
         </LinearLayout>
     </ScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>
