@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -17,15 +16,12 @@ public class SettingsActivity extends AppCompatActivity {
     private String m_category = "";
     private String m_difficulty = "Any Difficulty";
     private String m_type = "Any Type";
-    private DataAPI data = DataAPI.getInstance();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
-
-        //create new singleton data class
-
 
         // Only run once on start up, initializes all needed functions
         initializeAllClickListenersOnStart();
@@ -165,7 +161,7 @@ public class SettingsActivity extends AppCompatActivity {
     public void saveSettings(View view) {
 
         // order for api link question base link, amount, category id, difficulty, type (boolean / multiple)
-        String apiLink = data.getApiLink();
+        final String apiLink = "https://opentdb.com/api.php?";
         // get amount from text edit
         EditText numInput = (EditText)findViewById(R.id.numberOfQuestions_editNumber);
         String linkAmount = "amount=" + numInput.getText();
@@ -209,9 +205,9 @@ public class SettingsActivity extends AppCompatActivity {
         }
 
         // generate api link
-        apiLink += linkAmount + linkDiff + linkType;
+        //apiLink += linkAmount + linkDiff + linkType;
 
-        Toast.makeText(this,apiLink,Toast.LENGTH_LONG).show();
+     //   Toast.makeText(this,apiLink,Toast.LENGTH_LONG).show();
 
 
 
