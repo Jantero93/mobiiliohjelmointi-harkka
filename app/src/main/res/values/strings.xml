@@ -12,4 +12,5 @@
     <string name="selectedDifficultyItem">Any Difficulty</string>
     <string name="selectTypeHeader">Select Type:</string>
     <string name="selectedTypeItem">Any Type</string>
+    <string name="settingsSaveButton">Save</string>
 </resources>

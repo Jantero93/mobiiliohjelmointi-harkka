@@ -1,27 +1,31 @@
 package com.example.mobiiliohjelmointi_lopputy;
 
 public class DataAPI {
+    private static DataAPI single_instance = null;
+
     private String M_apiLink = "https://opentdb.com/api.php?";
-    private String M_difficulty = "";
-    private int M_amount = 0;
-    private int M_categoryId = 0;
 
-    public void setM_difficulty(String difficulty) {
+
+    private DataAPI(){
 
     }
 
-    public void setM_amount(int amount) {
-
+    public static DataAPI getInstance() {
+        if (single_instance == null) {
+            single_instance = new DataAPI();
+        }
+        return single_instance;
     }
 
-    public void setM_categoryId(String category){
-
-    }
 
     public String[] getAllCategorysAPI() {
         String[] test = {"nmu","test"};
 
         return test;
+    }
+
+    public String getApiLink(){
+        return M_apiLink;
     }
 
 
