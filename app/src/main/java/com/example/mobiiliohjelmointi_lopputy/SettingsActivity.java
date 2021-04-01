@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 
-public class CustomGameActivity extends AppCompatActivity {
+public class SettingsActivity extends AppCompatActivity {
     private int m_amount = 10;
     private String m_category = "";
     private String m_difficulty = "Any Difficulty";

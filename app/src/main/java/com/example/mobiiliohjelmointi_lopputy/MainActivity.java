@@ -44,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-        getCategoriesToCustomGame();
+        getCategoriesToSettings();
 
     }
 
@@ -55,9 +55,9 @@ public class MainActivity extends AppCompatActivity {
     //Start settings activity
     public void settingsButton_clicked(View view) {
 
-        Intent openCustomGameActivityIntent = new Intent( this, CustomGameActivity.class );
-        openCustomGameActivityIntent.putExtra("ALL_CATEGORIES_HASHMAP", m_categories);
-        startActivityForResult(openCustomGameActivityIntent, REQUESTCODE);
+        Intent openSettingsActivityIntent = new Intent( this, SettingsActivity.class );
+        openSettingsActivityIntent.putExtra("ALL_CATEGORIES_HASHMAP", m_categories);
+        startActivityForResult(openSettingsActivityIntent, REQUESTCODE);
     }
 
     //Start statistics activity
@@ -65,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     // Get needed API data on start
-    private void getCategoriesToCustomGame(){
+    private void getCategoriesToSettings(){
         // get categories on json
         StringRequest stringRequest = new StringRequest(Request.Method.GET, getAllCategoriesLink,
                 response -> {
