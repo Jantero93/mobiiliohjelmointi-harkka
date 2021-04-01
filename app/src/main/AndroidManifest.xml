@@ -14,7 +14,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Mobiiliohjelmointilopputyö">
 
-        <activity android:name=".SettingsActivity"></activity>
+        <activity android:name=".CustomGameActivity"></activity>
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
