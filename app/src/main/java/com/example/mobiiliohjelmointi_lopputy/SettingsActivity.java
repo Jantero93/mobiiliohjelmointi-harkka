@@ -1,6 +1,7 @@
 package com.example.mobiiliohjelmointi_lopputy;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
@@ -9,30 +10,89 @@ import android.widget.TextView;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 
 public class SettingsActivity extends AppCompatActivity {
     private int m_amount = 10;
     private String m_category = "";
     private String m_difficulty = "Any Difficulty";
     private String m_type = "Any Type";
-
+    private HashMap<String, Integer> m_all_categories;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
-
+        // get passed values from main activity
+        Intent intent = getIntent();
+        m_all_categories =(HashMap<String, Integer>)intent.getSerializableExtra("ALL_CATEGORIES_HASHMAP");
         // Only run once on start up, initializes all needed functions
         initializeAllClickListenersOnStart();
+    }
+
+    //generate api link, make api call and return to main menu
+    public void saveSettings(View view) {
+
+        // order for api link question base link, amount, category id, difficulty, type (boolean / multiple)
+        final String apiLink = "https://opentdb.com/api.php?";
+        // get amount from text edit
+        EditText numInput = (EditText)findViewById(R.id.numberOfQuestions_editNumber);
+        String linkAmount = "amount=" + numInput.getText();
+
+        String linkCategoryId = "&category=" + m_all_categories.get(m_category).toString();
+
+        String linkDiff = "";
+        // difficulty on right format
+        switch (m_difficulty)
+        {
+            case "Any Difficulty":
+                linkDiff = "";
+                break;
+            case "Easy":
+                linkDiff = "&difficulty=easy";
+                break;
+            case "Medium":
+                linkDiff = "&difficulty=medium";
+                break;
+            case "Hard":
+                linkDiff = "&difficulty=hard";
+                break;
+            default: linkDiff = "";
+                break;
+        }
+
+        // multiple questions / true & false on right format
+        String linkType = "";
+        switch (m_type)
+        {
+            case "Any Type":
+                linkType = "";
+                break;
+            case "Multiple Choice":
+                linkType = "&type=multiple";
+                break;
+            case "True / False":
+                linkType = "&type=boolean";
+                break;
+            default:
+                linkType = "";
+                break;
+        }
+
+        // generate api link
+        String callableLinkapiLink = apiLink + linkAmount + linkCategoryId + linkDiff + linkType;
+
+        //   Toast.makeText(this,apiLink,Toast.LENGTH_LONG).show();
+        finish();
     }
 
     /* Select right category for API call */
     private void selectQuizCategory_Dialog() {
         // test data (get list from API)
        // String[] test = m_api.getAllCategorysAPI();
-        String[] items = {"Cate", "test", "moro!"};
-
+        String[] items = parseAllCategoriesFromHashMap();
 
         AlertDialog.Builder selectCategory_Dialog = new AlertDialog.Builder(this );
         selectCategory_Dialog.setTitle("Choose category");
@@ -52,6 +112,14 @@ public class SettingsActivity extends AppCompatActivity {
         });
 
         selectCategory_Dialog.show();
+    }
+
+    private String[] parseAllCategoriesFromHashMap() {
+        ArrayList<String> items = new ArrayList<String>();
+        for (String key : m_all_categories.keySet()) {
+            items.add(key);
+        }
+        return items.toArray(new String[items.size()]);
     }
 
     private void selectDifficultyDialog() {
@@ -157,60 +225,7 @@ public class SettingsActivity extends AppCompatActivity {
         });
     }
 
-    //generate api link, make api call and return to main menu
-    public void saveSettings(View view) {
-
-        // order for api link question base link, amount, category id, difficulty, type (boolean / multiple)
-        final String apiLink = "https://opentdb.com/api.php?";
-        // get amount from text edit
-        EditText numInput = (EditText)findViewById(R.id.numberOfQuestions_editNumber);
-        String linkAmount = "amount=" + numInput.getText();
-
-        String linkDiff = "";
-        // difficulty on right format
-        switch (m_difficulty)
-        {
-            case "Any Difficulty":
-                linkDiff = "";
-                break;
-            case "Easy":
-                linkDiff = "&difficulty=easy";
-                break;
-            case "Medium":
-                linkDiff = "&difficulty=medium";
-                break;
-            case "Hard":
-                linkDiff = "&difficulty=hard";
-                break;
-            default: linkDiff = "";
-                break;
-        }
-
-        // multiple questions / true & false on right format
-        String linkType = "";
-        switch (m_type)
-        {
-            case "Any Type":
-                linkType = "";
-                break;
-            case "Multiple Choice":
-                linkType = "&type=multiple";
-                break;
-            case "True / False":
-                linkType = "&type=boolean";
-                break;
-            default:
-                linkType = "";
-                break;
-        }
-
-        // generate api link
-        //apiLink += linkAmount + linkDiff + linkType;
-
-     //   Toast.makeText(this,apiLink,Toast.LENGTH_LONG).show();
 
 
 
-
-    }
 }
