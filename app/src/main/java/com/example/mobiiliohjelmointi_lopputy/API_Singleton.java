@@ -44,10 +44,6 @@ public class API_Singleton {
     }
 
 
-    public void getAllCategories(){
-
-    }
-
     private void parseJsonAllCategories(String jsonResponse ) {
         try {
 

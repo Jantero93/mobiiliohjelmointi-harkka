@@ -25,7 +25,8 @@ public class MainActivity extends AppCompatActivity {
     RequestQueue m_requestQueue;
     private final String getAllCategoriesLink = "https://opentdb.com/api_category.php";
     private HashMap<String, Integer> m_categories;
-    private String gameApiLink = "";
+    // default link if settings not changed
+    private String gameApiLink = "https://opentdb.com/api.php?amount=10";
     final int REQUESTCODE = 1;
 
 
@@ -50,6 +51,9 @@ public class MainActivity extends AppCompatActivity {
 
     //Start game activity
     public void playButton_clicked(View view) {
+        Intent openGameActivityIntent = new Intent (this, GameActivity.class );
+        openGameActivityIntent.putExtra("GAME_LINK", gameApiLink);
+        startActivity( openGameActivityIntent );
     }
 
     //Start settings activity
@@ -109,6 +113,7 @@ public class MainActivity extends AppCompatActivity {
         if(requestCode == REQUESTCODE){
             if (resultCode == RESULT_OK) {
                 gameApiLink = data.getStringExtra("GAME_LINK");
+                int i = 0;
             }
         }
         else {
