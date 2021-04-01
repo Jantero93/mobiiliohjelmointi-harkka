@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.android.volley.Request;
@@ -24,6 +25,8 @@ public class MainActivity extends AppCompatActivity {
     RequestQueue m_requestQueue;
     private final String getAllCategoriesLink = "https://opentdb.com/api_category.php";
     private HashMap<String, Integer> m_categories;
+    private String gameApiLink = "";
+    final int REQUESTCODE = 1;
 
 
 
@@ -40,7 +43,8 @@ public class MainActivity extends AppCompatActivity {
         settings_Button.setEnabled(false);
 
 
-        getCategoriesToSettings();
+
+        getCategoriesToCustomGame();
 
     }
 
@@ -50,9 +54,10 @@ public class MainActivity extends AppCompatActivity {
 
     //Start settings activity
     public void settingsButton_clicked(View view) {
-        Intent openSettingsActivityIntent = new Intent( this, SettingsActivity.class );
-        openSettingsActivityIntent.putExtra("ALL_CATEGORIES_HASHMAP", m_categories);
-        startActivity( openSettingsActivityIntent );
+
+        Intent openCustomGameActivityIntent = new Intent( this, CustomGameActivity.class );
+        openCustomGameActivityIntent.putExtra("ALL_CATEGORIES_HASHMAP", m_categories);
+        startActivityForResult(openCustomGameActivityIntent, REQUESTCODE);
     }
 
     //Start statistics activity
@@ -60,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     // Get needed API data on start
-    private void getCategoriesToSettings(){
+    private void getCategoriesToCustomGame(){
         // get categories on json
         StringRequest stringRequest = new StringRequest(Request.Method.GET, getAllCategoriesLink,
                 response -> {
@@ -97,4 +102,17 @@ public class MainActivity extends AppCompatActivity {
        }
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if(requestCode == REQUESTCODE){
+            if (resultCode == RESULT_OK) {
+                gameApiLink = data.getStringExtra("GAME_LINK");
+            }
+        }
+        else {
+            Toast.makeText(this, "Error on game link" , Toast.LENGTH_LONG).show();
+        }
+    }
 }

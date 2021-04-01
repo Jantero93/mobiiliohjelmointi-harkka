@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -14,12 +15,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 
-public class SettingsActivity extends AppCompatActivity {
+public class CustomGameActivity extends AppCompatActivity {
     private int m_amount = 10;
     private String m_category = "";
     private String m_difficulty = "Any Difficulty";
     private String m_type = "Any Type";
     private HashMap<String, Integer> m_all_categories;
+    private String generatedLink = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,6 +30,11 @@ public class SettingsActivity extends AppCompatActivity {
         // get passed values from main activity
         Intent intent = getIntent();
         m_all_categories =(HashMap<String, Integer>)intent.getSerializableExtra("ALL_CATEGORIES_HASHMAP");
+
+    //    Button saveButton = (Button)findViewById(R.id.save_Button);
+     //   saveButton.setEnabled(false);
+
+
         // Only run once on start up, initializes all needed functions
         initializeAllClickListenersOnStart();
     }
@@ -41,7 +48,11 @@ public class SettingsActivity extends AppCompatActivity {
         EditText numInput = (EditText)findViewById(R.id.numberOfQuestions_editNumber);
         String linkAmount = "amount=" + numInput.getText();
 
-        String linkCategoryId = "&category=" + m_all_categories.get(m_category).toString();
+        // Play with all categories if input not selected
+        String linkCategoryId = "";
+        if (m_all_categories.containsKey(m_category))
+            linkCategoryId = "&category=" + m_all_categories.get(m_category).toString();
+
 
         String linkDiff = "";
         // difficulty on right format
@@ -82,11 +93,25 @@ public class SettingsActivity extends AppCompatActivity {
         }
 
         // generate api link
-        String callableLinkapiLink = apiLink + linkAmount + linkCategoryId + linkDiff + linkType;
+        String gameLink = apiLink + linkAmount + linkCategoryId + linkDiff + linkType;
 
-        //   Toast.makeText(this,apiLink,Toast.LENGTH_LONG).show();
-        finish();
+        if (validInput()) {
+            Intent resultIntent = new Intent();
+            resultIntent.putExtra("GAME_LINK", gameLink);
+            setResult(RESULT_OK, resultIntent);
+            Toast.makeText(this,gameLink,Toast.LENGTH_LONG).show();
+            finish();
+        }
+        else {
+            numInput.setError("Must be 10 - 50");
+            Toast.makeText(this, "ERROR INVALID INPUT", Toast.LENGTH_LONG).show();
+        }
+
+
+
     }
+
+
 
     /* Select right category for API call */
     private void selectQuizCategory_Dialog() {
@@ -225,7 +250,17 @@ public class SettingsActivity extends AppCompatActivity {
         });
     }
 
+    private boolean validInput(){
+        EditText numInput_EditText = (EditText)findViewById(R.id.numberOfQuestions_editNumber);
 
+        if (numInput_EditText.getText().toString().isEmpty())
+            return false;
+
+        String inputSTRING = numInput_EditText.getText().toString();
+        int input = Integer.parseInt(inputSTRING);
+        return (input >= 10 && input <= 50);
+
+    }
 
 
 }
