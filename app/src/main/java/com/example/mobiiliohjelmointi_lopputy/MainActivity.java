@@ -3,6 +3,7 @@ package com.example.mobiiliohjelmointi_lopputy;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -17,11 +18,14 @@ import org.json.JSONObject;
 
 import java.util.HashMap;
 
+
 public class MainActivity extends AppCompatActivity {
     API_Singleton m_API;
     RequestQueue m_requestQueue;
     private final String getAllCategoriesLink = "https://opentdb.com/api_category.php";
     private HashMap<String, Integer> m_categories;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +34,10 @@ public class MainActivity extends AppCompatActivity {
         API_Singleton m_api = API_Singleton.getInstance(this);
         m_requestQueue = API_Singleton.getInstance(this).getRequestQueue();
         m_categories = new HashMap<String, Integer>();
+
+        // set button enabled when categories data is downloaded from api
+        Button settings_Button = (Button)findViewById(R.id.menuSettings_Button);
+        settings_Button.setEnabled(false);
 
 
         getCategoriesToSettings();
@@ -43,6 +51,7 @@ public class MainActivity extends AppCompatActivity {
     //Start settings activity
     public void settingsButton_clicked(View view) {
         Intent openSettingsActivityIntent = new Intent( this, SettingsActivity.class );
+        openSettingsActivityIntent.putExtra("ALL_CATEGORIES_HASHMAP", m_categories);
         startActivity( openSettingsActivityIntent );
     }
 
@@ -55,12 +64,12 @@ public class MainActivity extends AppCompatActivity {
         // get categories on json
         StringRequest stringRequest = new StringRequest(Request.Method.GET, getAllCategoriesLink,
                 response -> {
-                    Toast.makeText(this.getApplicationContext(), response, Toast.LENGTH_LONG).show();
+                 //   Toast.makeText(this.getApplicationContext(), response, Toast.LENGTH_LONG).show();
                     parseJsonAllCategories(response);
 
                 },
                 error -> {
-                    Toast.makeText(this, "vituiz meny kateforiat",Toast.LENGTH_LONG).show();
+                    Toast.makeText(this, "Settings not downloaded",Toast.LENGTH_LONG).show();
                 }
         );
         if ( m_requestQueue != null ) {
@@ -78,6 +87,10 @@ public class MainActivity extends AppCompatActivity {
                 JSONObject category = trivia_categories.getJSONObject(i);
                 m_categories.put(category.getString("name"), category.getInt("id"));
             }
+
+
+            Button settings_Button = (Button)findViewById(R.id.menuSettings_Button);
+            settings_Button.setEnabled(true);
 
         } catch (JSONException e) {
            e.printStackTrace();
