@@ -2,6 +2,9 @@ package com.example.mobiiliohjelmointi_lopputy;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -21,7 +24,6 @@ public class GameActivity extends AppCompatActivity {
     RequestQueue m_requestQueue;
     ArrayList<QuizQuestion> m_gameQuestions;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,10 +32,18 @@ public class GameActivity extends AppCompatActivity {
         m_requestQueue = API_Singleton.getInstance(this).getRequestQueue();
         m_gameQuestions = new ArrayList<>();
 
+        // hide ui until data is fetched
+        RelativeLayout layout = (RelativeLayout) findViewById(R.id.gameLayout);
+        layout.setVisibility(View.GONE);
+
         Intent intent = getIntent();
+        // fetch game data, start game after data is fetched
         getGameData(intent.getStringExtra("GAME_LINK"));
+    }
 
-
+    private void startGame() {
+        TextView question = (TextView)findViewById(R.id.text_view_question);
+        question.setText(m_gameQuestions.get(0).getmQuestion());
     }
 
     private void getGameData(String apiLink) {
@@ -66,6 +76,10 @@ public class GameActivity extends AppCompatActivity {
             Toast.makeText(this, "halp parsiminen vituiz", Toast.LENGTH_LONG).show();
         }
 
+        //show layout
+        RelativeLayout layout = (RelativeLayout) findViewById(R.id.gameLayout);
+        layout.setVisibility(View.VISIBLE);
+        startGame();
     }
 
     private void parseQuestionAndAddToList(JSONObject JSONQuestion) {

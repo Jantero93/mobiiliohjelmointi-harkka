@@ -26,4 +26,8 @@ public class QuizQuestion {
         Collections.shuffle(allAnswers);
         return allAnswers.toArray(new String[allAnswers.size()]);
     }
+
+    public String getmQuestion() {
+        return mQuestion;
+    }
 }
