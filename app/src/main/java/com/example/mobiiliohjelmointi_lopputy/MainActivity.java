@@ -26,7 +26,7 @@ public class MainActivity extends AppCompatActivity {
     private final String getAllCategoriesLink = "https://opentdb.com/api_category.php";
     private HashMap<String, Integer> m_categories;
     // default link if settings not changed
-    private  String quickGameApiLink = "https://opentdb.com/api.php?amount=10";
+    private  String quickGameApiLink = "https://opentdb.com/api.php?amount=1";
     //private String customGameApiLink = "";
 
     final int REQUESTCODE = 1;

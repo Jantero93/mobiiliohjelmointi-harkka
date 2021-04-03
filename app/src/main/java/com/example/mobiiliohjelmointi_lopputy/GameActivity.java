@@ -39,6 +39,7 @@ public class GameActivity extends AppCompatActivity {
 
     int m_score = 0;
     int m_question_count = 0;
+    boolean m_gameEnded = false;
 
     // keeps track on present question's index
     int indexOfPresentQuestion = 0;
@@ -58,63 +59,54 @@ public class GameActivity extends AppCompatActivity {
         getGameData(intent.getStringExtra("GAME_LINK"));
     }
 
-    private void playGame() {
-
-        setUIforQuestion(m_gameQuestions.get(indexOfPresentQuestion));
-
-        textView_questionCount.setText("Question: " + Integer.toString(indexOfPresentQuestion+1)
-                + "/" + Integer.toString(m_gameQuestions.size()));
-
-    }
-
     public void addListenerOnConfirmButton() {
         button_confirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (m_gameEnded)
+                    finish();
 
+                else {
+                    // FIND SELECTED RADIO INPUT
+                    int selectedId = radioGroup.getCheckedRadioButtonId();
+                    RadioButton selectedRadioButton = (RadioButton)findViewById(selectedId);
+                    String playersAnswer = getPlayersAnswer(selectedId);
 
-
-                int selectedId = radioGroup.getCheckedRadioButtonId();
-                RadioButton selectedRadioButton = (RadioButton)findViewById(selectedId);
-                String playersAnswer = getPlayersAnswer(selectedId);
-
-                // highlight is answer right or wrong and add point
-                if (m_gameQuestions.get(indexOfPresentQuestion).getmCorrectAnswer().equals(playersAnswer)) {
-                    m_score++;
-                    textView_score.setText("Score: " + Integer.toString(m_score));
-                    Toast.makeText(GameActivity.this,"CORRECT!",Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(GameActivity.this,"WRONG!\nCorrect answer: \n" + m_gameQuestions.get(indexOfPresentQuestion).getmCorrectAnswer(),Toast.LENGTH_SHORT).show();
+                    // CHECK IS ANSWER CORRECT
+                    if (m_gameQuestions.get(indexOfPresentQuestion).getmCorrectAnswer().equals(playersAnswer)) {
+                        m_score++;
+                        textView_score.setText("Score: " + Integer.toString(m_score));
+                        Toast.makeText(GameActivity.this,"CORRECT!",Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(GameActivity.this,"WRONG!\nCorrect answer: \n" + m_gameQuestions.get(indexOfPresentQuestion).getmCorrectAnswer(),Toast.LENGTH_SHORT).show();
+                    }
                 }
+
 
                 indexOfPresentQuestion++;
 
                 if (indexOfPresentQuestion < m_gameQuestions.size()) {
                     setUIforQuestion(m_gameQuestions.get(indexOfPresentQuestion));
-
-                    textView_questionCount.setText("Question: " + Integer.toString(indexOfPresentQuestion+1)
-                            + "/" + Integer.toString(m_gameQuestions.size()));
                 }
-
-                if (indexOfPresentQuestion  == m_gameQuestions.size()){
-                    radioGroup.setVisibility(View.GONE);
-                    String text = "Your score: " + m_score + "\n Return main menu";
-                    button_confirm.setText(text);
-                    button_confirm.setTextSize(TypedValue.COMPLEX_UNIT_SP, 35);
-                    radioButton1.setText("");
-                    radioButton2.setText("");
-                    radioButton3.setText("");
-                    radioButton4.setText("");
-                    textView_question.setText("");
-                    textView_score.setText("");
+                else {
+                    endOfGameHideUI();
+                    m_gameEnded = true;
                 }
-                else if (indexOfPresentQuestion > m_gameQuestions.size()){
-                    finish();
-                }
-
-                playGame();
             }
         });
+    }
+
+    private void endOfGameHideUI(){
+        radioGroup.setVisibility(View.GONE);
+        String text = "Your score: " + m_score + "\n Return main menu";
+        button_confirm.setText(text);
+        button_confirm.setTextSize(TypedValue.COMPLEX_UNIT_SP, 35);
+        radioButton1.setText("");
+        radioButton2.setText("");
+        radioButton3.setText("");
+        radioButton4.setText("");
+        textView_question.setText("");
+        textView_score.setText("");
     }
 
     public void addListenerRadioGroup() {
@@ -132,10 +124,13 @@ public class GameActivity extends AppCompatActivity {
     }
 
     private void setUIforQuestion(QuizQuestion question) {
+
+       /* set first radio button selected to
+         avoid clicking confirm with unselected input */
         radioGroup.clearCheck();
         radioButton1.setChecked(true);
 
-    if (question.ismIsTrueFalseQuestion()) {
+    if (question.isTrueFalseQuestion()) {
         // show only 2 answer option
         radioButton3.setVisibility(View.GONE);
         radioButton4.setVisibility(View.GONE);
@@ -151,12 +146,10 @@ public class GameActivity extends AppCompatActivity {
         radioButton2.setText(answersMixed[1]);
         radioButton3.setText(answersMixed[2]);
         radioButton4.setText(answersMixed[3]);
-
-
     }
 
     textView_question.setText(question.getmQuestion());
-        textView_questionCount.setText("Question: " + m_question_count + "/" + m_gameQuestions.size());
+    textView_questionCount.setText("Question: " + (indexOfPresentQuestion + 1) + " of " + m_gameQuestions.size());
     }
 
     private void getGameData(String apiLink) {
@@ -192,7 +185,8 @@ public class GameActivity extends AppCompatActivity {
         //show layout
         RelativeLayout layout = (RelativeLayout) findViewById(R.id.gameLayout);
         layout.setVisibility(View.VISIBLE);
-        playGame();
+        // set first question on ui after api call
+        setUIforQuestion(m_gameQuestions.get(indexOfPresentQuestion));
     }
 
     private void parseQuestionAndAddToList(JSONObject JSONQuestion) {
@@ -210,8 +204,6 @@ public class GameActivity extends AppCompatActivity {
             String[] incorrect_answers = wrongAnswersList.toArray(new String[wrongAnswersList.size()]);
 
             m_gameQuestions.add(new QuizQuestion(question, correctAnswer, incorrect_answers));
-            int a = 1;
-
         } catch (JSONException e) {
             e.printStackTrace();
         }
