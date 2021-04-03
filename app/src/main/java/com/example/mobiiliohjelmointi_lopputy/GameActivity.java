@@ -23,19 +23,24 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 public class GameActivity extends AppCompatActivity {
-    API_Singleton m_API;
     RequestQueue m_requestQueue;
     ArrayList<QuizQuestion> m_gameQuestions;
 
     TextView textView_question;
     TextView textView_score;
-    TextView textView_questionAnswered;
+    TextView textView_questionCount;
     Button button_confirm;
     RadioButton radioButton1;
     RadioButton radioButton2;
     RadioButton radioButton3;
     RadioButton radioButton4;
     RadioGroup radioGroup;
+
+    int m_score = 0;
+    int m_question_count = 0;
+
+    // keeps track on present question's index
+    int indexOfPresentQuestion = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,9 +58,44 @@ public class GameActivity extends AppCompatActivity {
         getGameData(intent.getStringExtra("GAME_LINK"));
     }
 
-    private void startGame() {
-        TextView question = (TextView)findViewById(R.id.text_view_question);
-        question.setText(m_gameQuestions.get(0).getmQuestion());
+    private void playGame() {
+
+        if (indexOfPresentQuestion < m_gameQuestions.size()) {
+            setUIforQuestion(m_gameQuestions.get(indexOfPresentQuestion));
+        } else {
+            // tee joku loppu juttu endActivityFunction();
+        }
+
+    }
+
+
+    public void confirmButtonClicked(View view) {
+        for (QuizQuestion question : m_gameQuestions) {
+            setUIforQuestion(question);
+        }
+    }
+
+    private void setUIforQuestion(QuizQuestion question) {
+    if (question.ismIsTrueFalseQuestion()) {
+        // show only 2 answer option
+        radioButton3.setVisibility(View.GONE);
+        radioButton4.setVisibility(View.GONE);
+        radioButton1.setText("True");
+        radioButton2.setText("False");
+    } else {
+        // show all options
+        radioButton3.setVisibility(View.VISIBLE);
+        radioButton4.setVisibility(View.VISIBLE);
+        // get all answers mixed
+        String[] answersMixed = question.getAllAnswersMixed();
+        radioButton1.setText(answersMixed[0]);
+        radioButton2.setText(answersMixed[1]);
+        radioButton3.setText(answersMixed[2]);
+        radioButton4.setText(answersMixed[3]);
+    }
+
+    textView_question.setText(question.getmQuestion());
+        textView_questionCount.setText("Question: " + m_question_count + "/" + m_gameQuestions.size());
     }
 
     private void getGameData(String apiLink) {
@@ -91,7 +131,7 @@ public class GameActivity extends AppCompatActivity {
         //show layout
         RelativeLayout layout = (RelativeLayout) findViewById(R.id.gameLayout);
         layout.setVisibility(View.VISIBLE);
-        startGame();
+        playGame();
     }
 
     private void parseQuestionAndAddToList(JSONObject JSONQuestion) {
@@ -122,7 +162,7 @@ public class GameActivity extends AppCompatActivity {
     private void initializeUI() {
         textView_question = (TextView)findViewById(R.id.text_view_question);
         textView_score = (TextView)findViewById(R.id.text_view_score);
-        textView_questionAnswered = (TextView)findViewById(R.id.text_view_question_count);
+        textView_questionCount = (TextView)findViewById(R.id.text_view_question_count);
         button_confirm = (Button)findViewById(R.id.button_confirm_next);
         radioButton1 = (RadioButton)findViewById(R.id.radio_button1);
         radioButton2 = (RadioButton)findViewById(R.id.radio_button2);
@@ -135,13 +175,6 @@ public class GameActivity extends AppCompatActivity {
         layout.setVisibility(View.GONE);
     }
 
-    public void confirmButtonClicked(View view) {
-        for (QuizQuestion question : m_gameQuestions) {
-            setUIforQuestion(question);
-        }
-    }
 
-    private void setUIforQuestion(QuizQuestion question) {
 
-    }
 }
