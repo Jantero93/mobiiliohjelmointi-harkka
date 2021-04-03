@@ -22,7 +22,7 @@ public class QuizQuestion {
         }
     }
 
-    public boolean ismIsTrueFalseQuestion() {
+    public boolean isTrueFalseQuestion() {
         return mIsTrueFalseQuestion;
     }
 

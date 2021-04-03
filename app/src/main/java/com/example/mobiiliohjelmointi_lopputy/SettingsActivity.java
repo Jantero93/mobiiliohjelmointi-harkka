@@ -16,7 +16,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 
 public class SettingsActivity extends AppCompatActivity {
-    private int m_amount = 10;
+    private int m_amount = 1;
     private String m_category = "";
     private String m_difficulty = "Any Difficulty";
     private String m_type = "Any Type";
@@ -103,7 +103,7 @@ public class SettingsActivity extends AppCompatActivity {
             finish();
         }
         else {
-            numInput.setError("Must be 10 - 50");
+            numInput.setError("Must be 1 - 50");
             Toast.makeText(this, "ERROR INVALID INPUT", Toast.LENGTH_LONG).show();
         }
 
@@ -258,8 +258,7 @@ public class SettingsActivity extends AppCompatActivity {
 
         String inputSTRING = numInput_EditText.getText().toString();
         int input = Integer.parseInt(inputSTRING);
-        return (input >= 10 && input <= 50);
-
+        return (input >= 1 && input <= 50);
     }
 
 
