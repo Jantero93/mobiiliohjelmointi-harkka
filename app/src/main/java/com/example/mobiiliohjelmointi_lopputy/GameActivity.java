@@ -52,7 +52,6 @@ public class GameActivity extends AppCompatActivity {
         this.initializeUI();
 
 
-
         Intent intent = getIntent();
         // fetch game data, start game after data is fetched
         getGameData(intent.getStringExtra("GAME_LINK"));
@@ -70,9 +69,7 @@ public class GameActivity extends AppCompatActivity {
 
 
     public void confirmButtonClicked(View view) {
-        for (QuizQuestion question : m_gameQuestions) {
-            setUIforQuestion(question);
-        }
+      indexOfPresentQuestion++;
     }
 
     private void setUIforQuestion(QuizQuestion question) {
@@ -160,6 +157,8 @@ public class GameActivity extends AppCompatActivity {
 
     /* Initialize UI components onCreate */
     private void initializeUI() {
+
+
         textView_question = (TextView)findViewById(R.id.text_view_question);
         textView_score = (TextView)findViewById(R.id.text_view_score);
         textView_questionCount = (TextView)findViewById(R.id.text_view_question_count);
@@ -173,6 +172,22 @@ public class GameActivity extends AppCompatActivity {
         // hide ui until data is fetched
         RelativeLayout layout = (RelativeLayout) findViewById(R.id.gameLayout);
         layout.setVisibility(View.GONE);
+
+        // add listener to confirm button
+        addListenerOnRadioButton();
+    }
+
+    public void addListenerOnRadioButton() {
+        button_confirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int selectedId = radioGroup.getCheckedRadioButtonId();
+                RadioButton selectedRadioButton = (RadioButton)findViewById(selectedId);
+                Toast.makeText(GameActivity.this, selectedRadioButton.getText().toString(), Toast.LENGTH_LONG).show();
+                String test = selectedRadioButton.getText().toString();
+                int i = 0;
+            }
+        });
     }
 
 
