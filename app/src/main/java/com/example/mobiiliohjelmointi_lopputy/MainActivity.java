@@ -115,7 +115,6 @@ public class MainActivity extends AppCompatActivity {
         if(requestCode == REQUESTCODE){
             if (resultCode == RESULT_OK) {
                 quickGameApiLink = data.getStringExtra("GAME_LINK");
-                int i = 0;
             }
         }
         else {

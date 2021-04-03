@@ -2,6 +2,7 @@ package com.example.mobiiliohjelmointi_lopputy;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.TypedValue;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RadioButton;
@@ -59,20 +60,81 @@ public class GameActivity extends AppCompatActivity {
 
     private void playGame() {
 
-        if (indexOfPresentQuestion < m_gameQuestions.size()) {
-            setUIforQuestion(m_gameQuestions.get(indexOfPresentQuestion));
-        } else {
-            // tee joku loppu juttu endActivityFunction();
-        }
+        setUIforQuestion(m_gameQuestions.get(indexOfPresentQuestion));
+
+        textView_questionCount.setText("Question: " + Integer.toString(indexOfPresentQuestion+1)
+                + "/" + Integer.toString(m_gameQuestions.size()));
 
     }
 
+    public void addListenerOnConfirmButton() {
+        button_confirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
 
-    public void confirmButtonClicked(View view) {
-      indexOfPresentQuestion++;
+
+
+                int selectedId = radioGroup.getCheckedRadioButtonId();
+                RadioButton selectedRadioButton = (RadioButton)findViewById(selectedId);
+                String playersAnswer = getPlayersAnswer(selectedId);
+
+                // highlight is answer right or wrong and add point
+                if (m_gameQuestions.get(indexOfPresentQuestion).getmCorrectAnswer().equals(playersAnswer)) {
+                    m_score++;
+                    textView_score.setText("Score: " + Integer.toString(m_score));
+                    Toast.makeText(GameActivity.this,"CORRECT!",Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(GameActivity.this,"WRONG!\nCorrect answer: \n" + m_gameQuestions.get(indexOfPresentQuestion).getmCorrectAnswer(),Toast.LENGTH_SHORT).show();
+                }
+
+                indexOfPresentQuestion++;
+
+                if (indexOfPresentQuestion < m_gameQuestions.size()) {
+                    setUIforQuestion(m_gameQuestions.get(indexOfPresentQuestion));
+
+                    textView_questionCount.setText("Question: " + Integer.toString(indexOfPresentQuestion+1)
+                            + "/" + Integer.toString(m_gameQuestions.size()));
+                }
+
+                if (indexOfPresentQuestion  == m_gameQuestions.size()){
+                    radioGroup.setVisibility(View.GONE);
+                    String text = "Your score: " + m_score + "\n Return main menu";
+                    button_confirm.setText(text);
+                    button_confirm.setTextSize(TypedValue.COMPLEX_UNIT_SP, 35);
+                    radioButton1.setText("");
+                    radioButton2.setText("");
+                    radioButton3.setText("");
+                    radioButton4.setText("");
+                    textView_question.setText("");
+                    textView_score.setText("");
+                }
+                else if (indexOfPresentQuestion > m_gameQuestions.size()){
+                    finish();
+                }
+
+                playGame();
+            }
+        });
+    }
+
+    public void addListenerRadioGroup() {
+        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+             button_confirm.setEnabled(true);
+            }
+        });
+    }
+
+    private String getPlayersAnswer(int selectedId) {
+        RadioButton selectedRadioButton = (RadioButton)findViewById(selectedId);
+        return selectedRadioButton.getText().toString();
     }
 
     private void setUIforQuestion(QuizQuestion question) {
+        radioGroup.clearCheck();
+        radioButton1.setChecked(true);
+
     if (question.ismIsTrueFalseQuestion()) {
         // show only 2 answer option
         radioButton3.setVisibility(View.GONE);
@@ -89,6 +151,8 @@ public class GameActivity extends AppCompatActivity {
         radioButton2.setText(answersMixed[1]);
         radioButton3.setText(answersMixed[2]);
         radioButton4.setText(answersMixed[3]);
+
+
     }
 
     textView_question.setText(question.getmQuestion());
@@ -157,8 +221,6 @@ public class GameActivity extends AppCompatActivity {
 
     /* Initialize UI components onCreate */
     private void initializeUI() {
-
-
         textView_question = (TextView)findViewById(R.id.text_view_question);
         textView_score = (TextView)findViewById(R.id.text_view_score);
         textView_questionCount = (TextView)findViewById(R.id.text_view_question_count);
@@ -174,21 +236,10 @@ public class GameActivity extends AppCompatActivity {
         layout.setVisibility(View.GONE);
 
         // add listener to confirm button
-        addListenerOnRadioButton();
+        addListenerOnConfirmButton();
     }
 
-    public void addListenerOnRadioButton() {
-        button_confirm.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int selectedId = radioGroup.getCheckedRadioButtonId();
-                RadioButton selectedRadioButton = (RadioButton)findViewById(selectedId);
-                Toast.makeText(GameActivity.this, selectedRadioButton.getText().toString(), Toast.LENGTH_LONG).show();
-                String test = selectedRadioButton.getText().toString();
-                int i = 0;
-            }
-        });
-    }
+
 
 
 
