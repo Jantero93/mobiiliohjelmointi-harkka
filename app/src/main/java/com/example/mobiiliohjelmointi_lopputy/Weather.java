@@ -102,10 +102,10 @@ private List<HashMap<String, String>> dayForecasthashMapList = new ArrayList<>()
             for( DayForecast dayForecast : dayForecastArrayList) {
                 HashMap<String,String> dayForecastItemHash = new HashMap<>();
                 dayForecastItemHash.put("description", dayForecast.description);
-                dayForecastItemHash.put("morningTemp", "Morning:\n" + dayForecast.temp_morning + " °C");
-                dayForecastItemHash.put("dayTemp", "Day:\n" + dayForecast.temp_day + " °C");
-                dayForecastItemHash.put("eveningTemp", "Evening:\n" + dayForecast.temp_evening + " °C");
-                dayForecastItemHash.put("nightTemp", "Night:\n" + dayForecast.temp_night + " °C");
+                dayForecastItemHash.put("morningTemp", "Morning:\n" + (int)round(dayForecast.temp_morning, 0) + " °C");
+                dayForecastItemHash.put("dayTemp", "Day:\n" + (int)round(dayForecast.temp_day, 0) + " °C");
+                dayForecastItemHash.put("eveningTemp", "Evening:\n" + (int)round(dayForecast.temp_evening, 0) + " °C");
+                dayForecastItemHash.put("nightTemp", "Night:\n" + (int)round(dayForecast.temp_night, 0) + " °C");
                 dayForecastItemHash.put("date", dayForecast.stringDate);
                 dayForecasthashMapList.add ( dayForecastItemHash );
             }
@@ -125,6 +125,15 @@ private List<HashMap<String, String>> dayForecasthashMapList = new ArrayList<>()
         }
     }
 
+    public static double round(double value, int places) {
+        if (places < 0) throw new IllegalArgumentException();
+
+        long factor = (long) Math.pow(10, places);
+        value = value * factor;
+        long tmp = Math.round(value);
+        return (double) tmp / factor;
+    }
+
     private DayForecast parseDailyJsonToObject(JSONObject dailyJSON) {
         double morningTemp = -99, dayTemp = -99, eveningTemp = -99, nightTemp = -99;
         String desc = "empty";
@@ -138,7 +147,7 @@ private List<HashMap<String, String>> dayForecasthashMapList = new ArrayList<>()
 
             // get description
             JSONArray weather = dailyJSON.getJSONArray("weather");
-            desc = weather.getJSONObject(0).getString("main");
+            desc = weather.getJSONObject(0).getString("description");
 
             long timestamp = dailyJSON.getLong("dt");
             date.setTime(timestamp*1000);
