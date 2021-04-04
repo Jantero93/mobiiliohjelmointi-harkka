@@ -6,6 +6,8 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.widget.ListView;
+import android.widget.SimpleAdapter;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -21,6 +23,8 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
 
 public class Weather extends AppCompatActivity {
    // pro.openweathermap.org/data/2.5/forecast/hourly?lat={lat}&lon={lon}&appid={API key}
@@ -32,6 +36,9 @@ private Location lastLocation;
 private LocationManager locationManager;
 private RequestQueue requestQueue;
 private ArrayList<DayForecast> dayForecastArrayList;
+private SimpleAdapter simpleAdapter;
+
+private List<HashMap<String, String>> dayForecasthashMapList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,9 +94,31 @@ private ArrayList<DayForecast> dayForecastArrayList;
             JSONObject root = new JSONObject(response);
             JSONArray daily = root.getJSONArray("daily");
 
+            // parse from JSON to Dayforecast and add to dayforecast ha
             for (int i = 0; i < daily.length(); i++) {
                 dayForecastArrayList.add(parseDailyJsonToObject(daily.getJSONObject(i)));
             }
+
+            for( DayForecast dayForecast : dayForecastArrayList) {
+                HashMap<String,String> dayForecastItemHash = new HashMap<>();
+                dayForecastItemHash.put("description", dayForecast.description);
+                dayForecastItemHash.put("morningTemp", "Morning:\n" + dayForecast.temp_morning + " °C");
+                dayForecastItemHash.put("dayTemp", "Day:\n" + dayForecast.temp_day + " °C");
+                dayForecastItemHash.put("eveningTemp", "Evening:\n" + dayForecast.temp_evening + " °C");
+                dayForecastItemHash.put("nightTemp", "Night:\n" + dayForecast.temp_night + " °C");
+                dayForecastItemHash.put("date", dayForecast.stringDate);
+                dayForecasthashMapList.add ( dayForecastItemHash );
+            }
+
+            simpleAdapter = new SimpleAdapter( this,  dayForecasthashMapList,
+                    R.layout.weather_list_item_layout,
+                    new String[] {"description", "morningTemp", "dayTemp", "eveningTemp", "nightTemp", "date"},
+                    new int[] {R.id.textView_description, R.id.textView_morningTemp, R.id.textView_dayTemp,
+                    R.id.textView_evenTemp, R.id.textView_nightTemp, R.id.textView_Date}
+                    );
+
+            ListView dayforecast = (ListView)findViewById(R.id.forecastListView);
+            dayforecast.setAdapter( simpleAdapter );
 
         } catch (JSONException e){
             e.printStackTrace();
@@ -97,14 +126,10 @@ private ArrayList<DayForecast> dayForecastArrayList;
     }
 
     private DayForecast parseDailyJsonToObject(JSONObject dailyJSON) {
-        double morningTemp = 0, dayTemp = 0, eveningTemp = 0, nightTemp = 0;
-        String desc = "";
+        double morningTemp = -99, dayTemp = -99, eveningTemp = -99, nightTemp = -99;
+        String desc = "empty";
         Date date = new Date();
         try {
-
-
-
-
             JSONObject tempObject = dailyJSON.getJSONObject("temp");
             morningTemp = tempObject.getDouble("morn");
             dayTemp = tempObject.getDouble("day");
@@ -117,8 +142,6 @@ private ArrayList<DayForecast> dayForecastArrayList;
 
             long timestamp = dailyJSON.getLong("dt");
             date.setTime(timestamp*1000);
-            int i = 0;
-
 
         } catch (JSONException e) {
             e.printStackTrace();
