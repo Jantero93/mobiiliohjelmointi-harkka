@@ -20,16 +20,16 @@ import org.json.JSONObject;
 import java.util.HashMap;
 
 
-public class MainActivity extends AppCompatActivity {
-    API_Singleton m_API;
+public class MainActivity extends AppCompatActivity
+{
     RequestQueue m_requestQueue;
     private final String getAllCategoriesLink = "https://opentdb.com/api_category.php";
     private HashMap<String, Integer> m_categories;
     // default link if settings not changed
-    private  String quickGameApiLink = "https://opentdb.com/api.php?amount=1";
+    private  String gameApiLink = "https://opentdb.com/api.php?amount=10";
     //private String customGameApiLink = "";
 
-    final int REQUESTCODE = 1;
+    final int REQUESTCODE_SETTINGS = 1;
 
 
 
@@ -37,15 +37,12 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        API_Singleton m_api = API_Singleton.getInstance(this);
         m_requestQueue = API_Singleton.getInstance(this).getRequestQueue();
         m_categories = new HashMap<String, Integer>();
 
         // set button enabled when categories data is downloaded from api
         Button settings_Button = (Button)findViewById(R.id.menuSettings_Button);
         settings_Button.setEnabled(false);
-
-
 
         getCategoriesToSettings();
 
@@ -54,16 +51,15 @@ public class MainActivity extends AppCompatActivity {
     //Start game activity
     public void playButton_clicked(View view) {
         Intent openGameActivityIntent = new Intent (this, GameActivity.class );
-        openGameActivityIntent.putExtra("GAME_LINK", quickGameApiLink);
+        openGameActivityIntent.putExtra("GAME_LINK", gameApiLink);
         startActivity( openGameActivityIntent );
     }
 
     //Start settings activity
     public void settingsButton_clicked(View view) {
-
         Intent openSettingsActivityIntent = new Intent( this, SettingsActivity.class );
         openSettingsActivityIntent.putExtra("ALL_CATEGORIES_HASHMAP", m_categories);
-        startActivityForResult(openSettingsActivityIntent, REQUESTCODE);
+        startActivityForResult(openSettingsActivityIntent, REQUESTCODE_SETTINGS);
     }
 
     //Start statistics activity
@@ -108,13 +104,15 @@ public class MainActivity extends AppCompatActivity {
        }
     }
 
+    // Get result from settings activity (game link for api)
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if(requestCode == REQUESTCODE){
+        if(requestCode == REQUESTCODE_SETTINGS){
             if (resultCode == RESULT_OK) {
-                quickGameApiLink = data.getStringExtra("GAME_LINK");
+                gameApiLink = data.getStringExtra("GAME_LINK");
+                int i = 0;
             }
         }
         else {

@@ -12,7 +12,6 @@
         android:id="@+id/text_view_score"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Score: 0"
         android:textColor="@android:color/black" />
 
     <TextView
@@ -20,7 +19,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/text_view_score"
-        android:text="Question: 1/x"
         android:textColor="@android:color/black" />
 
     <TextView
@@ -29,7 +27,6 @@
         android:layout_height="wrap_content"
         android:layout_above="@id/radio_group"
         android:layout_marginBottom="16dp"
-        android:text="Here will be the question text\nHere will be the question text\nHere will be the question text"
         android:textAlignment="center"
         android:textColor="@android:color/black"
         android:textSize="20sp" />
@@ -43,26 +40,22 @@
         <RadioButton
             android:id="@+id/radio_button1"
             android:layout_width="396dp"
-            android:layout_height="wrap_content"
-            android:text="Option 1" />
+            android:layout_height="wrap_content" />
 
         <RadioButton
             android:id="@+id/radio_button2"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Option 2" />
+            android:layout_height="wrap_content" />
 
         <RadioButton
             android:id="@+id/radio_button3"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Option 3" />
+            android:layout_height="wrap_content" />
 
         <RadioButton
             android:id="@+id/radio_button4"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Option 4" />
+            android:layout_height="wrap_content" />
     </RadioGroup>
 
     <Button
@@ -73,4 +66,5 @@
         android:layout_marginTop="16dp"
         android:onClick="confirmButtonClicked"
         android:text="Confirm" />
+
 </RelativeLayout>
