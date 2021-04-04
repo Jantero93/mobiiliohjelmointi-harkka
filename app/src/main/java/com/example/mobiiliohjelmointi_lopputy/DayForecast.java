@@ -25,7 +25,7 @@ public class DayForecast {
     }
 
     private String parseDate(Date date) {
-        SimpleDateFormat formatter = new SimpleDateFormat("dd.MM");
+        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM");
         return formatter.format(date);
     }
 }
