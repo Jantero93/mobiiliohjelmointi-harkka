@@ -5,13 +5,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/settings_gradient_background"
-    tools:context=".SettingsActivity" >
+    tools:context=".SettingsActivity">
 
     <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:layout_editor_absoluteX="100dp"
-        tools:layout_editor_absoluteY="172dp">
+        android:id="@+id/scrollView2"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -92,9 +95,10 @@
                 android:layout_marginLeft="40sp"
                 android:layout_marginTop="80sp"
                 android:layout_marginRight="40sp"
-                android:onClick="saveSettings"
+                android:onClick="saveSettings_ButtonClicked"
                 android:text="@string/settingsSaveButton" />
 
         </LinearLayout>
     </ScrollView>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -40,7 +40,7 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     //generate api link, make api call and return to main menu
-    public void saveSettings(View view) {
+    public void saveSettings_ButtonClicked(View view) {
 
         // order for api link question base link, amount, category id, difficulty, type (boolean / multiple)
         final String apiLink = "https://opentdb.com/api.php?";
@@ -50,9 +50,9 @@ public class SettingsActivity extends AppCompatActivity {
 
         // Play with all categories if input not selected
         String linkCategoryId = "";
-        if (m_all_categories.containsKey(m_category))
+        if (m_all_categories.containsKey(m_category)) {
             linkCategoryId = "&category=" + m_all_categories.get(m_category).toString();
-
+        }
 
         String linkDiff = "";
         // difficulty on right format

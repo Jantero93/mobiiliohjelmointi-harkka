@@ -7,7 +7,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,15 +30,20 @@ public class GameActivity extends AppCompatActivity {
     TextView textView_score;
     TextView textView_questionCount;
     Button button_confirm;
+
     RadioButton radioButton1;
     RadioButton radioButton2;
     RadioButton radioButton3;
     RadioButton radioButton4;
     RadioGroup radioGroup;
 
+
     int m_score = 0;
     int m_question_count = 0;
     boolean m_gameEnded = false;
+
+    boolean apiCallSuccess = false;
+
 
     // keeps track on present question's index
     int indexOfPresentQuestion = 0;
@@ -48,7 +52,7 @@ public class GameActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
-        API_Singleton m_api = API_Singleton.getInstance(this);
+
         m_requestQueue = API_Singleton.getInstance(this).getRequestQueue();
         m_gameQuestions = new ArrayList<>();
         this.initializeUI();
@@ -63,24 +67,11 @@ public class GameActivity extends AppCompatActivity {
         button_confirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (m_gameEnded)
+
+                if (m_gameEnded || !apiCallSuccess)
                     finish();
-
-                else {
-                    // FIND SELECTED RADIO INPUT
-                    int selectedId = radioGroup.getCheckedRadioButtonId();
-                    RadioButton selectedRadioButton = (RadioButton)findViewById(selectedId);
-                    String playersAnswer = getPlayersAnswer(selectedId);
-
-                    // CHECK IS ANSWER CORRECT
-                    if (m_gameQuestions.get(indexOfPresentQuestion).getmCorrectAnswer().equals(playersAnswer)) {
-                        m_score++;
-                        textView_score.setText("Score: " + Integer.toString(m_score));
-                        Toast.makeText(GameActivity.this,"CORRECT!",Toast.LENGTH_SHORT).show();
-                    } else {
-                        Toast.makeText(GameActivity.this,"WRONG!\nCorrect answer: \n" + m_gameQuestions.get(indexOfPresentQuestion).getmCorrectAnswer(),Toast.LENGTH_SHORT).show();
-                    }
-                }
+                else
+                   checkAnswer();
 
 
                 indexOfPresentQuestion++;
@@ -92,8 +83,27 @@ public class GameActivity extends AppCompatActivity {
                     endOfGameHideUI();
                     m_gameEnded = true;
                 }
+
+
+
             }
         });
+    }
+
+    private void checkAnswer(){
+        // FIND SELECTED RADIO INPUT
+        int selectedId = radioGroup.getCheckedRadioButtonId();
+        RadioButton selectedRadioButton = (RadioButton)findViewById(selectedId);
+        String playersAnswer = getPlayersAnswer(selectedId);
+
+        // CHECK IS ANSWER CORRECT
+        if (m_gameQuestions.get(indexOfPresentQuestion).getmCorrectAnswer().equals(playersAnswer)) {
+            m_score++;
+            textView_score.setText("Score: " + Integer.toString(m_score));
+            Toast.makeText(GameActivity.this,"CORRECT!",Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(GameActivity.this,"WRONG!\nCorrect answer: \n" + m_gameQuestions.get(indexOfPresentQuestion).getmCorrectAnswer(),Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void endOfGameHideUI(){
@@ -158,7 +168,8 @@ public class GameActivity extends AppCompatActivity {
                     parseJSON(response);
                 },
                 error -> {
-                    Toast.makeText(this, "Game akt error link", Toast.LENGTH_LONG).show();
+                    Toast.makeText(this, "Error on downloading game data!'\n'Please try again", Toast.LENGTH_LONG).show();
+                    finish();
                 }
         );
         if (m_requestQueue != null) {
@@ -168,25 +179,41 @@ public class GameActivity extends AppCompatActivity {
 
     private void parseJSON(String JSONresponse) {
         try {
-            JSONObject root = new JSONObject(JSONresponse);
-            JSONArray questionsArray = root.getJSONArray("results");
-            JSONObject question = questionsArray.getJSONObject(0);
 
-            for (int i = 0; i < questionsArray.length(); i++) {
-                parseQuestionAndAddToList(questionsArray.getJSONObject(i));
+
+            JSONObject root = new JSONObject(JSONresponse);
+            if (root.getInt("response_code") != 0) {
+                apiCallSuccess = false;
+                button_confirm.setText("Fetching game data failed \nNot enough questions on category etc");
+
+            } else {
+                apiCallSuccess = true;
             }
 
-            int i = 0;
+            if (apiCallSuccess) {
+                JSONArray questionsArray = root.getJSONArray("results");
+                JSONObject question = questionsArray.getJSONObject(0);
+
+                for (int i = 0; i < questionsArray.length(); i++) {
+                    parseQuestionAndAddToList(questionsArray.getJSONObject(i));
+                }
+
+                int i = 0;
+            }
         } catch (JSONException e) {
             e.printStackTrace();
             Toast.makeText(this, "halp parsiminen vituiz", Toast.LENGTH_LONG).show();
         }
 
         //show layout
-        RelativeLayout layout = (RelativeLayout) findViewById(R.id.gameLayout);
-        layout.setVisibility(View.VISIBLE);
+        //RelativeLayout layout = (RelativeLayout) findViewById(R.id.gameLayout);
+       // layout.setVisibility(View.VISIBLE);
+
         // set first question on ui after api call
-        setUIforQuestion(m_gameQuestions.get(indexOfPresentQuestion));
+        if (apiCallSuccess) {
+            radioGroup.setVisibility(View.VISIBLE);
+            setUIforQuestion(m_gameQuestions.get(indexOfPresentQuestion));
+        }
     }
 
     private void parseQuestionAndAddToList(JSONObject JSONQuestion) {
@@ -222,17 +249,9 @@ public class GameActivity extends AppCompatActivity {
         radioButton3 = (RadioButton)findViewById(R.id.radio_button3);
         radioButton4 = (RadioButton)findViewById(R.id.radio_button4);
         radioGroup = (RadioGroup)findViewById(R.id.radio_group);
+        radioGroup.setVisibility(View.GONE);
 
-        // hide ui until data is fetched
-        RelativeLayout layout = (RelativeLayout) findViewById(R.id.gameLayout);
-        layout.setVisibility(View.GONE);
-
-        // add listener to confirm button
         addListenerOnConfirmButton();
     }
-
-
-
-
 
 }
