@@ -3,7 +3,7 @@
     <string name="mainMenu_header">Quiz Game</string>
     <string name="mainMenuButton_play">Play</string>
     <string name="mainMenuButton_settings">Settings</string>
-    <string name="mainMenuButton_statistics">Statistics</string>
+    <string name="mainMenuButton_weather">Weather</string>
     <string name="settings_numberOfQuestion">Number of Questions:</string>
     <string name="rangeOfQuestionsHeader">1 - 50</string>
     <string name="selectCategoryHeader">Select Category:</string>

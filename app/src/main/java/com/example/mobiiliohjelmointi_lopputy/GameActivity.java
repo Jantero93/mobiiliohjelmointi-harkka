@@ -39,7 +39,6 @@ public class GameActivity extends AppCompatActivity {
 
 
     int m_score = 0;
-    int m_question_count = 0;
     boolean m_gameEnded = false;
 
     boolean apiCallSuccess = false;
@@ -83,9 +82,6 @@ public class GameActivity extends AppCompatActivity {
                     endOfGameHideUI();
                     m_gameEnded = true;
                 }
-
-
-
             }
         });
     }
@@ -94,7 +90,7 @@ public class GameActivity extends AppCompatActivity {
         // FIND SELECTED RADIO INPUT
         int selectedId = radioGroup.getCheckedRadioButtonId();
         RadioButton selectedRadioButton = (RadioButton)findViewById(selectedId);
-        String playersAnswer = getPlayersAnswer(selectedId);
+        String playersAnswer= selectedRadioButton.getText().toString();
 
         // CHECK IS ANSWER CORRECT
         if (m_gameQuestions.get(indexOfPresentQuestion).getmCorrectAnswer().equals(playersAnswer)) {
@@ -128,13 +124,7 @@ public class GameActivity extends AppCompatActivity {
         });
     }
 
-    private String getPlayersAnswer(int selectedId) {
-        RadioButton selectedRadioButton = (RadioButton)findViewById(selectedId);
-        return selectedRadioButton.getText().toString();
-    }
-
     private void setUIforQuestion(QuizQuestion question) {
-
        /* set first radio button selected to
          avoid clicking confirm with unselected input */
         radioGroup.clearCheck();
@@ -179,13 +169,11 @@ public class GameActivity extends AppCompatActivity {
 
     private void parseJSON(String JSONresponse) {
         try {
-
-
             JSONObject root = new JSONObject(JSONresponse);
+            // check is response succeed
             if (root.getInt("response_code") != 0) {
                 apiCallSuccess = false;
                 button_confirm.setText("Fetching game data failed \nNot enough questions on category etc");
-
             } else {
                 apiCallSuccess = true;
             }
@@ -197,23 +185,15 @@ public class GameActivity extends AppCompatActivity {
                 for (int i = 0; i < questionsArray.length(); i++) {
                     parseQuestionAndAddToList(questionsArray.getJSONObject(i));
                 }
-
-                int i = 0;
+                radioGroup.setVisibility(View.VISIBLE);
+                setUIforQuestion(m_gameQuestions.get(indexOfPresentQuestion));
             }
         } catch (JSONException e) {
             e.printStackTrace();
             Toast.makeText(this, "halp parsiminen vituiz", Toast.LENGTH_LONG).show();
         }
 
-        //show layout
-        //RelativeLayout layout = (RelativeLayout) findViewById(R.id.gameLayout);
-       // layout.setVisibility(View.VISIBLE);
-
-        // set first question on ui after api call
-        if (apiCallSuccess) {
-            radioGroup.setVisibility(View.VISIBLE);
-            setUIforQuestion(m_gameQuestions.get(indexOfPresentQuestion));
-        }
+        button_confirm.setVisibility(View.VISIBLE);
     }
 
     private void parseQuestionAndAddToList(JSONObject JSONQuestion) {
@@ -250,6 +230,7 @@ public class GameActivity extends AppCompatActivity {
         radioButton4 = (RadioButton)findViewById(R.id.radio_button4);
         radioGroup = (RadioGroup)findViewById(R.id.radio_group);
         radioGroup.setVisibility(View.GONE);
+        button_confirm.setVisibility(View.GONE);
 
         addListenerOnConfirmButton();
     }
