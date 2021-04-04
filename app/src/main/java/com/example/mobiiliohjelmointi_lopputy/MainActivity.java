@@ -63,7 +63,9 @@ public class MainActivity extends AppCompatActivity
     }
 
     //Start statistics activity
-    public void statisticButton_clicked(View view) {
+    public void weatherButton_clicked(View view) {
+        Intent openWeatherActivityIntent = new Intent ( this, Weather.class );
+        startActivity(openWeatherActivityIntent);
     }
 
     // Get needed API data on start

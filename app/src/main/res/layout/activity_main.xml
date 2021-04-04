@@ -45,11 +45,11 @@
         app:layout_constraintTop_toBottomOf="@+id/menuPlay_Button" />
 
     <Button
-        android:id="@+id/menuStatistics_Button"
+        android:id="@+id/menuWeather_Button"
         android:layout_width="185dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="105dp"
-        android:onClick="statisticButton_clicked"
+        android:onClick="weatherButton_clicked"
         android:text="@string/mainMenuButton_weather"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
