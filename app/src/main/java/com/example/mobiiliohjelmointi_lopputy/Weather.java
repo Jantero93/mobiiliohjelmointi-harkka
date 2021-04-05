@@ -48,13 +48,29 @@ private List<HashMap<String, String>> dayForecasthashMapList = new ArrayList<>()
 
         // RequestQueue from singleton
         requestQueue = API_Singleton.getInstance(this).getRequestQueue();
-        // Get location on start up
-        getLocation();
-
+     //   getLastLocation();
     }
 
-    private void getLocation(){
+    // get last location when enter on app
+    @Override
+    public void onStart(){
+        super.onStart();
+        getLastLocation();
+    }
+
+    // get fetched data off when leave app
+    @Override
+    public void onPause(){
+        super.onPause();
+        dayForecasthashMapList.clear();
+        dayForecastArrayList.clear();
+    }
+
+
+
+    private void getLastLocation(){
         locationManager = (LocationManager) getSystemService( Context.LOCATION_SERVICE );
+
 
         // Check permissions
         if (checkCallingOrSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION ) != PackageManager.PERMISSION_GRANTED) {
@@ -65,11 +81,14 @@ private List<HashMap<String, String>> dayForecasthashMapList = new ArrayList<>()
         }
         lastLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 
-        getWeatherData();
-     //   TextView text = (TextView)findViewById(R.id.textView);
-      //  text.setText(Double.toString(lastLocation.getLatitude()));
-       // TextView text2 = (TextView)findViewById(R.id.textView2);
-      //  text2.setText(Double.toString(lastLocation.getLongitude()));
+        if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER))
+            Toast.makeText(this, "Pls turn GPS on", Toast.LENGTH_LONG).show();
+
+        if (lastLocation == null)
+            Toast.makeText(this, "No last location on phone", Toast.LENGTH_LONG).show();
+        else
+            getWeatherData();
+
     }
 
     private void getWeatherData() {
@@ -86,7 +105,6 @@ private List<HashMap<String, String>> dayForecasthashMapList = new ArrayList<>()
         if (requestQueue != null){
             API_Singleton.getInstance(this).addToRequestQueue( stringRequest );
         }
-
     }
 
     private void parseJSONweatherData(String response) {
@@ -165,4 +183,5 @@ private List<HashMap<String, String>> dayForecasthashMapList = new ArrayList<>()
         apiLink = apiLink.replace("{API_KEY}", APIKEY);
         return apiLink;
     }
+
 }
