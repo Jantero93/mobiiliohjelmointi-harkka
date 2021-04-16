@@ -1,6 +1,5 @@
 package com.example.mobiiliohjelmointi_lopputy;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.TypedValue;
 import android.view.View;
@@ -23,8 +22,6 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 public class GameActivity extends AppCompatActivity {
-    RequestQueue m_requestQueue;
-    ArrayList<QuizQuestion> m_gameQuestions;
 
     TextView textView_question;
     TextView textView_score;
@@ -37,11 +34,14 @@ public class GameActivity extends AppCompatActivity {
     RadioButton radioButton4;
     RadioGroup radioGroup;
 
+    ArrayList<QuizQuestion> m_gameQuestions;
+    RequestQueue m_requestQueue;
 
     int m_score = 0;
     boolean m_gameEnded = false;
     boolean apiCallSuccess = false;
 
+    API_Singleton M_API;
 
     // keeps track on present question's index
     int indexOfPresentQuestion = 0;
@@ -51,14 +51,31 @@ public class GameActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
 
-        m_requestQueue = API_Singleton.getInstance(this).getRequestQueue();
-        m_gameQuestions = new ArrayList<>();
+        M_API = API_Singleton.getInstance(this);
+
+        if (M_API.isGameDataDownloaded() && M_API.isGameDataResponseCodeOK())
+            m_gameQuestions = M_API.getM_GameData();
+        else {
+            if (!M_API.isGameDataResponseCodeOK())
+                Toast.makeText(this, "Not enought questions on category etc.", Toast.LENGTH_LONG).show();
+
+            if (!M_API.isGameDataDownloaded())
+                Toast.makeText(this, "game data not downloaded", Toast.LENGTH_LONG).show();
+
+            this.finish();
+        }
+
+
+        int i = 0;
+
         this.initializeUI();
 
+        setUIforQuestion(m_gameQuestions.get(indexOfPresentQuestion));
 
-        Intent intent = getIntent();
+
+    //    Intent intent = getIntent();
         // fetch game data, start game after data is fetched
-        getGameData(intent.getStringExtra("GAME_LINK"));
+     //   getGameData(intent.getStringExtra("GAME_LINK"));
     }
 
     // First question is set automatically after data is fetched
@@ -227,8 +244,7 @@ public class GameActivity extends AppCompatActivity {
         radioButton3 = (RadioButton)findViewById(R.id.radio_button3);
         radioButton4 = (RadioButton)findViewById(R.id.radio_button4);
         radioGroup = (RadioGroup)findViewById(R.id.radio_group);
-        radioGroup.setVisibility(View.GONE);
-        button_confirm.setVisibility(View.GONE);
+
 
         // initialize all listeners
         addListenerOnConfirmButton();

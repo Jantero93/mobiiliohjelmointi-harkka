@@ -37,6 +37,8 @@ public class MainActivity extends AppCompatActivity
         m_API = API_Singleton.getInstance(this);
         m_API.getAllCategoriesData();
 
+        m_API.getGameData(gameApiLink);
+
 
     }
 
@@ -47,7 +49,7 @@ public class MainActivity extends AppCompatActivity
         startActivity( openGameActivityIntent );
     }
 
-    //Start settings activity
+    //Start settings activity if data is downloaded
     public void settingsButton_clicked(View view) {
         if (m_API.isCategoriesDownloaded()){
             // put categories to next activity
@@ -57,9 +59,9 @@ public class MainActivity extends AppCompatActivity
             openSettingsActivityIntent.putExtra("ALL_CATEGORIES_HASHMAP", m_all_categories);
             startActivityForResult(openSettingsActivityIntent, REQUESTCODE_SETTINGS);
         }
-
-
-
+        else {
+            Toast.makeText(this, "Settings data not downloaded yet, try again", Toast.LENGTH_LONG).show();
+        }
     }
 
     //Start weather activity
@@ -76,7 +78,7 @@ public class MainActivity extends AppCompatActivity
 
         if(requestCode == REQUESTCODE_SETTINGS){
             if (resultCode == RESULT_OK) {
-                gameApiLink = data.getStringExtra("GAME_LINK");
+                m_API.getGameData(data.getStringExtra("GAME_LINK"));
             }
         }
         else {

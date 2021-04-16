@@ -12,6 +12,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class API_Singleton {
@@ -23,8 +24,12 @@ public class API_Singleton {
     private final String ALL_CATEGORIES_URL = "https://opentdb.com/api_category.php";
 
     private HashMap<String, Integer> m_categories;
+    private ArrayList<QuizQuestion> m_GameData = new ArrayList<>();
 
     private boolean categoriesDownloaded = false;
+
+    private boolean gameDataDownloaded = false;
+    private boolean gameDataResponseCodeOK = false;
 
     public static synchronized API_Singleton getInstance(Context context) {
         if (instance == null) {
@@ -65,6 +70,7 @@ public class API_Singleton {
     }
 
     private void parseJSONCategories(String JSONresponse) {
+
         // parse JSON to hash map, where name key and value correspond id
         try {
             JSONObject root = new JSONObject(JSONresponse);
@@ -81,13 +87,79 @@ public class API_Singleton {
         }
     }
 
-    public boolean isCategoriesDownloaded(){
-        return categoriesDownloaded;
+    public void getGameData(String url) {
+
+        // remove previous questions on new fetch
+        m_GameData.clear();
+
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                response -> {
+                    parseJSONGameData(response);
+                },
+                error -> {
+                    Toast.makeText(ctx, "Error on downloading categories", Toast.LENGTH_LONG).show();
+                }
+        );
+        if (requestQueue != null) {
+            API_Singleton.getInstance(ctx).addToRequestQueue(stringRequest);
+        }
     }
 
-    public HashMap<String, Integer> getM_categories(){
-        return m_categories;
+    private void parseJSONGameData(String response){
+        try {
+            JSONObject root = new JSONObject(response);
+
+            if (root.getInt("response_code") != 0)
+                gameDataResponseCodeOK = false;
+            else
+                gameDataResponseCodeOK = true;
+
+
+            if (gameDataResponseCodeOK){
+                JSONArray questionsArray = root.getJSONArray("results");
+                JSONObject question = questionsArray.getJSONObject(0);
+
+                for (int i = 0; i < questionsArray.length(); i++) {
+                    parseQuestionAndAddToList(questionsArray.getJSONObject(i));
+                }
+
+            }
+
+            int i = 0;
+            gameDataDownloaded = true;
+
+        }   catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
+
+    private void parseQuestionAndAddToList(JSONObject JSONQuestion) {
+        try {
+            String correctAnswer = JSONQuestion.getString("correct_answer");
+            String question = JSONQuestion.getString("question");
+
+            // incorrect answers to list --> string []
+            ArrayList<String> wrongAnswersList = new ArrayList<>();
+            JSONArray wrongAnswersArray = JSONQuestion.getJSONArray("incorrect_answers");
+            for (int i = 0; i < wrongAnswersArray.length(); i++) {
+                wrongAnswersList.add(wrongAnswersArray.getString(i));
+            }
+
+            String[] incorrect_answers = wrongAnswersList.toArray(new String[wrongAnswersList.size()]);
+
+            m_GameData.add(new QuizQuestion(question, correctAnswer, incorrect_answers));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    public boolean isCategoriesDownloaded(){ return categoriesDownloaded; }
+    public boolean isGameDataDownloaded() { return gameDataDownloaded; }
+    public boolean isGameDataResponseCodeOK(){ return gameDataResponseCodeOK; }
+
+    public HashMap<String, Integer> getM_categories(){ return m_categories; }
+    public ArrayList<QuizQuestion> getM_GameData(){ return m_GameData; }
 
     public <T> void addToRequestQueue(Request<T> req) {
         getRequestQueue().add(req);
