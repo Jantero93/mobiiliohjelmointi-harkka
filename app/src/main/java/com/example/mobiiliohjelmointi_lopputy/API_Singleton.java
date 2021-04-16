@@ -93,6 +93,7 @@ public class API_Singleton {
     public void getGameData(String customGameApiLink) {
         // remove previous questions on new api call
         m_GameData.clear();
+        gameDataDownloaded = false;
 
         StringRequest stringRequest = new StringRequest(Request.Method.GET, customGameApiLink,
                 response -> {
@@ -152,12 +153,12 @@ public class API_Singleton {
         }
     }
     // getters
-    public boolean isCategoriesDownloaded(){ return categoriesDownloaded; }
+    public HashMap<String, Integer> getM_categories() { return m_categories; }
+    public boolean isCategoriesDownloaded() { return categoriesDownloaded; }
+
     public boolean isGameDataDownloaded() { return gameDataDownloaded; }
+    public boolean isGameDataResponseCodeOK() { return gameDataResponseCodeOK; }
+    public ArrayList<QuizQuestion> getM_GameData() { return m_GameData; }
 
-    public boolean isGameDataResponseCodeOK(){ return gameDataResponseCodeOK; }
-    public HashMap<String, Integer> getM_categories(){ return m_categories; }
-
-    public ArrayList<QuizQuestion> getM_GameData(){ return m_GameData; }
 
 }
