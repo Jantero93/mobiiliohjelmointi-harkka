@@ -28,9 +28,8 @@ import java.util.List;
 
 public class Weather extends AppCompatActivity {
    // pro.openweathermap.org/data/2.5/forecast/hourly?lat={lat}&lon={lon}&appid={API key}
-private final String MapiLink = "https://api.openweathermap.org/data/2.5/onecall?lat={LAT}&lon={LON}&appid={API_KEY}&units=metric&exclude=current,minutely,hourly";
+private final String DEFAULT_API_LINK = "https://api.openweathermap.org/data/2.5/onecall?lat={LAT}&lon={LON}&appid={API_KEY}&units=metric&exclude=current,minutely,hourly";
 private final String APIKEY = "881e2e4957f0b379389af22826a33532";
-private final String testExample = "https://api.openweathermap.org/data/2.5/onecall?lat={lat}&lon={lon}&appid={API KEY}&units=metric&exclude=current,minutely,hourly";
 
 private Location lastLocation;
 private LocationManager locationManager;
@@ -48,7 +47,6 @@ private List<HashMap<String, String>> dayForecasthashMapList = new ArrayList<>()
 
         // RequestQueue from singleton
         requestQueue = API_Singleton.getInstance(this).getRequestQueue();
-     //   getLastLocation();
     }
 
     // get last location when enter on app
@@ -66,11 +64,8 @@ private List<HashMap<String, String>> dayForecasthashMapList = new ArrayList<>()
         dayForecastArrayList.clear();
     }
 
-
-
     private void getLastLocation(){
         locationManager = (LocationManager) getSystemService( Context.LOCATION_SERVICE );
-
 
         // Check permissions
         if (checkCallingOrSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION ) != PackageManager.PERMISSION_GRANTED) {
@@ -88,10 +83,10 @@ private List<HashMap<String, String>> dayForecasthashMapList = new ArrayList<>()
             Toast.makeText(this, "No last location on phone", Toast.LENGTH_LONG).show();
         else
             getWeatherData();
-
     }
 
     private void getWeatherData() {
+        // add coordinates to link
         String url = getApiLinkRightFormat();
 
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
@@ -128,6 +123,7 @@ private List<HashMap<String, String>> dayForecasthashMapList = new ArrayList<>()
                 dayForecasthashMapList.add ( dayForecastItemHash );
             }
 
+            // add adapter, corresponding ui elements and hash map keys
             simpleAdapter = new SimpleAdapter( this,  dayForecasthashMapList,
                     R.layout.weather_list_item_layout,
                     new String[] {"description", "morningTemp", "dayTemp", "eveningTemp", "nightTemp", "date"},
@@ -137,7 +133,6 @@ private List<HashMap<String, String>> dayForecasthashMapList = new ArrayList<>()
 
             ListView dayforecast = (ListView)findViewById(R.id.forecastListView);
             dayforecast.setAdapter( simpleAdapter );
-
         } catch (JSONException e){
             e.printStackTrace();
         }
@@ -168,6 +163,7 @@ private List<HashMap<String, String>> dayForecasthashMapList = new ArrayList<>()
             desc = weather.getJSONObject(0).getString("description");
 
             long timestamp = dailyJSON.getLong("dt");
+            // time in ms for java date class
             date.setTime(timestamp*1000);
 
         } catch (JSONException e) {
@@ -177,8 +173,8 @@ private List<HashMap<String, String>> dayForecasthashMapList = new ArrayList<>()
     }
 
     private String getApiLinkRightFormat(){
-        String apiLink = MapiLink;
-        apiLink = apiLink.replace("{LAT}",Double.toString(lastLocation.getLatitude()));
+        String apiLink = DEFAULT_API_LINK;
+        apiLink = apiLink.replace("{LAT}", Double.toString(lastLocation.getLatitude()));
         apiLink = apiLink.replace("{LON}", Double.toString(lastLocation.getLongitude()));
         apiLink = apiLink.replace("{API_KEY}", APIKEY);
         return apiLink;
