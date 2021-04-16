@@ -15,6 +15,7 @@ public class QuizQuestion {
         mCorrectAnswer = correctAnswer;
         mWrongAnswers = wrongAnswers;
 
+        // is question multiple or true / false
         if (mWrongAnswers.length > 1) {
             mIsTrueFalseQuestion = false;
         } else {
@@ -22,12 +23,16 @@ public class QuizQuestion {
         }
     }
 
-    public boolean isTrueFalseQuestion() {
-        return mIsTrueFalseQuestion;
+    public String getmQuestion() {
+        return mQuestion;
     }
 
     public String getmCorrectAnswer() {
         return mCorrectAnswer;
+    }
+
+    public boolean isTrueFalseQuestion() {
+        return mIsTrueFalseQuestion;
     }
 
     public String[] getAllAnswersMixed() {
@@ -39,9 +44,5 @@ public class QuizQuestion {
         Collections.shuffle(allAnswers);
 
         return allAnswers.toArray(new String[allAnswers.size()]);
-    }
-
-    public String getmQuestion() {
-        return mQuestion;
     }
 }

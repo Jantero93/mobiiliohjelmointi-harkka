@@ -23,15 +23,15 @@ import java.util.HashMap;
 public class MainActivity extends AppCompatActivity
 {
     RequestQueue m_requestQueue;
+    // get categories from api
     private final String getAllCategoriesLink = "https://opentdb.com/api_category.php";
+    // get categories from api category name - id pair
     private HashMap<String, Integer> m_categories;
-    // default link if settings not changed
+    // default link if settings not changed, 'quick play'
     private  String gameApiLink = "https://opentdb.com/api.php?amount=10";
-    //private String customGameApiLink = "";
 
+    // Request code acticityforresult (settingsactivity)
     final int REQUESTCODE_SETTINGS = 1;
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,7 +45,6 @@ public class MainActivity extends AppCompatActivity
         settings_Button.setEnabled(false);
 
         getCategoriesToSettings();
-
     }
 
     //Start game activity
@@ -75,7 +74,6 @@ public class MainActivity extends AppCompatActivity
                 response -> {
                  //   Toast.makeText(this.getApplicationContext(), response, Toast.LENGTH_LONG).show();
                     parseJsonAllCategories(response);
-
                 },
                 error -> {
                     Toast.makeText(this, "Settings not downloaded",Toast.LENGTH_LONG).show();
@@ -114,7 +112,6 @@ public class MainActivity extends AppCompatActivity
         if(requestCode == REQUESTCODE_SETTINGS){
             if (resultCode == RESULT_OK) {
                 gameApiLink = data.getStringExtra("GAME_LINK");
-                int i = 0;
             }
         }
         else {

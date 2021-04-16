@@ -6,15 +6,14 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 public class API_Singleton {
     private static API_Singleton instance = null;
     private RequestQueue requestQueue;
     private static Context ctx;
 
     private String M_apiLink = "https://opentdb.com/api.php?";
+
+    private
 
 
     public static synchronized API_Singleton getInstance(Context context) {
@@ -39,26 +38,10 @@ public class API_Singleton {
         return requestQueue;
     }
 
+
+
     public <T> void addToRequestQueue(Request<T> req) {
         getRequestQueue().add(req);
     }
-
-
-    private void parseJsonAllCategories(String jsonResponse ) {
-        try {
-
-            JSONObject rootObject = new JSONObject(jsonResponse);
-
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-    }
-
-    public String getApiLink(){
-        return M_apiLink;
-    }
-
 
 }

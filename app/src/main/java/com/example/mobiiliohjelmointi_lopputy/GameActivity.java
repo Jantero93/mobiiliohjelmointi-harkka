@@ -40,7 +40,6 @@ public class GameActivity extends AppCompatActivity {
 
     int m_score = 0;
     boolean m_gameEnded = false;
-
     boolean apiCallSuccess = false;
 
 
@@ -62,19 +61,17 @@ public class GameActivity extends AppCompatActivity {
         getGameData(intent.getStringExtra("GAME_LINK"));
     }
 
+    // First question is set automatically after data is fetched
     public void addListenerOnConfirmButton() {
         button_confirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 if (m_gameEnded || !apiCallSuccess)
                     finish();
                 else
-                   checkAnswer();
-
+                    checkAnswer();
 
                 indexOfPresentQuestion++;
-
                 if (indexOfPresentQuestion < m_gameQuestions.size()) {
                     setUIforQuestion(m_gameQuestions.get(indexOfPresentQuestion));
                 }
@@ -152,6 +149,7 @@ public class GameActivity extends AppCompatActivity {
     textView_questionCount.setText("Question: " + (indexOfPresentQuestion + 1) + " of " + m_gameQuestions.size());
     }
 
+    // fetch data
     private void getGameData(String apiLink) {
         StringRequest stringRequest = new StringRequest(Request.Method.GET, apiLink,
                 response -> {
@@ -182,9 +180,11 @@ public class GameActivity extends AppCompatActivity {
                 JSONArray questionsArray = root.getJSONArray("results");
                 JSONObject question = questionsArray.getJSONObject(0);
 
+                // Add QuizQuestions to ArrayList
                 for (int i = 0; i < questionsArray.length(); i++) {
                     parseQuestionAndAddToList(questionsArray.getJSONObject(i));
                 }
+                // Set UI visible and set first question
                 radioGroup.setVisibility(View.VISIBLE);
                 setUIforQuestion(m_gameQuestions.get(indexOfPresentQuestion));
             }
@@ -214,8 +214,6 @@ public class GameActivity extends AppCompatActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
-
     }
 
     /* Initialize UI components onCreate */
@@ -232,6 +230,7 @@ public class GameActivity extends AppCompatActivity {
         radioGroup.setVisibility(View.GONE);
         button_confirm.setVisibility(View.GONE);
 
+        // initialize all listeners
         addListenerOnConfirmButton();
     }
 

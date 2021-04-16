@@ -39,6 +39,8 @@ public class SettingsActivity extends AppCompatActivity {
         initializeAllClickListenersOnStart();
     }
 
+
+
     //generate api link, make api call and return to main menu
     public void saveSettings_ButtonClicked(View view) {
 
