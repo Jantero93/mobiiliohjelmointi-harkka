@@ -14,4 +14,6 @@
     <string name="selectedTypeItem">Any Type</string>
     <string name="settingsSaveButton">Save</string>
     <string name="ToastCorrectAnswer">Correct</string>
+    <string name="QuizConfirmButton">Confirm</string>
+    <string name="QuizCalender">Add result to calender</string>
 </resources>

@@ -1,5 +1,7 @@
 package com.example.mobiiliohjelmointi_lopputy;
 
+import android.content.Intent;
+import android.icu.util.Calendar;
 import android.os.Bundle;
 import android.util.TypedValue;
 import android.view.View;
@@ -21,6 +23,7 @@ public class GameActivity extends AppCompatActivity {
     TextView textView_score;
     TextView textView_questionCount;
     Button button_confirm;
+    Button button_addCalender;
 
     RadioButton radioButton1;
     RadioButton radioButton2;
@@ -81,6 +84,7 @@ public class GameActivity extends AppCompatActivity {
                 }
                 else {
                     endOfGameHideUI();
+                    button_addCalender.setVisibility(View.VISIBLE);
                     m_gameEnded = true;
                 }
             }
@@ -99,7 +103,7 @@ public class GameActivity extends AppCompatActivity {
             textView_score.setText("Score: " + Integer.toString(m_score));
             Toast.makeText(GameActivity.this,"CORRECT!",Toast.LENGTH_SHORT).show();
         } else {
-            Toast.makeText(GameActivity.this,"WRONG!\nCorrect answer: \n" + m_gameQuestions.get(indexOfPresentQuestion).getmCorrectAnswer(),Toast.LENGTH_SHORT).show();
+            Toast.makeText(GameActivity.this,"WRONG!\nCorrect answer:\n" + m_gameQuestions.get(indexOfPresentQuestion).getmCorrectAnswer(),Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -159,15 +163,31 @@ public class GameActivity extends AppCompatActivity {
         textView_score = (TextView)findViewById(R.id.text_view_score);
         textView_questionCount = (TextView)findViewById(R.id.text_view_question_count);
         button_confirm = (Button)findViewById(R.id.button_confirm_next);
+        button_addCalender = (Button)findViewById(R.id.button_add_result_calender);
         radioButton1 = (RadioButton)findViewById(R.id.radio_button1);
         radioButton2 = (RadioButton)findViewById(R.id.radio_button2);
         radioButton3 = (RadioButton)findViewById(R.id.radio_button3);
         radioButton4 = (RadioButton)findViewById(R.id.radio_button4);
         radioGroup = (RadioGroup)findViewById(R.id.radio_group);
 
+        button_addCalender.setVisibility(View.GONE);
 
         // initialize all listeners
         addListenerOnConfirmButton();
     }
 
+    public void addResultCalender(View view) {
+        Toast.makeText(this, "add calender ckilds", Toast.LENGTH_SHORT).show();
+
+        Calendar cal = Calendar.getInstance();
+        Intent intent = new Intent(Intent.ACTION_EDIT);
+        intent.setType("vnd.android.cursor.item/event");
+        intent.putExtra("beginTime", cal.getTimeInMillis());
+        intent.putExtra("allDay", true);
+        intent.putExtra("title", "Game result");
+        intent.putExtra("description", "Score: " + m_score + " / " + m_gameQuestions.size());
+        startActivity(intent);
+        finish();
+
+    }
 }

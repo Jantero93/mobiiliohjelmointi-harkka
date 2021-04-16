@@ -44,9 +44,13 @@ public class MainActivity extends AppCompatActivity
 
     //Start game activity
     public void playButton_clicked(View view) {
-        Intent openGameActivityIntent = new Intent (this, GameActivity.class );
-        openGameActivityIntent.putExtra("GAME_LINK", gameApiLink);
-        startActivity( openGameActivityIntent );
+        if (m_API.isGameDataDownloaded()) {
+            Intent openGameActivityIntent = new Intent(this, GameActivity.class);
+            //  openGameActivityIntent.putExtra("GAME_LINK", gameApiLink);
+            startActivity(openGameActivityIntent);
+        } else{
+            Toast.makeText(this, "Game Data not download, try again", Toast.LENGTH_SHORT).show();
+        }
     }
 
     //Start settings activity if data is downloaded

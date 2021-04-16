@@ -12,14 +12,14 @@
         android:id="@+id/text_view_score"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@android:color/black" />
+        android:textColor="@color/white" />
 
     <TextView
         android:id="@+id/text_view_question_count"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/text_view_score"
-        android:textColor="@android:color/black" />
+        android:textColor="@color/white" />
 
     <TextView
         android:id="@+id/text_view_question"
@@ -28,7 +28,7 @@
         android:layout_above="@id/radio_group"
         android:layout_marginBottom="16dp"
         android:textAlignment="center"
-        android:textColor="@android:color/black"
+        android:textColor="@color/white"
         android:textSize="20sp" />
 
     <RadioGroup
@@ -65,6 +65,15 @@
         android:layout_below="@id/radio_group"
         android:layout_marginTop="16dp"
         android:onClick="confirmButtonClicked"
-        android:text="Confirm" />
+        android:text="@string/QuizConfirmButton" />
+
+    <Button
+        android:id="@+id/button_add_result_calender"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="200sp"
+        android:onClick="addResultCalender"
+        android:text="@string/QuizCalender" />
 
 </RelativeLayout>
