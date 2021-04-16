@@ -20,14 +20,15 @@ public class API_Singleton {
     private RequestQueue requestQueue;
     private static Context ctx;
 
-    private String M_apiLink = "https://opentdb.com/api.php?";
     private final String ALL_CATEGORIES_URL = "https://opentdb.com/api_category.php";
 
-    private HashMap<String, Integer> m_categories;
-    private ArrayList<QuizQuestion> m_GameData = new ArrayList<>();
 
+    // for settings activity
+    private HashMap<String, Integer> m_categories = new HashMap<>();
     private boolean categoriesDownloaded = false;
 
+    // for game activity
+    private ArrayList<QuizQuestion> m_GameData = new ArrayList<>();
     private boolean gameDataDownloaded = false;
     private boolean gameDataResponseCodeOK = false;
 
@@ -38,12 +39,9 @@ public class API_Singleton {
         return instance;
     }
 
-
     private API_Singleton(Context context) {
         ctx = context;
         requestQueue = getRequestQueue();
-
-        m_categories = new HashMap<>();
     }
 
     public RequestQueue getRequestQueue() {
@@ -55,6 +53,11 @@ public class API_Singleton {
         return requestQueue;
     }
 
+    public <T> void addToRequestQueue(Request<T> req) {
+        getRequestQueue().add(req);
+    }
+
+    // all categories hash map for settings activity
     public void getAllCategoriesData() {
         StringRequest stringRequest = new StringRequest(Request.Method.GET, ALL_CATEGORIES_URL,
                 response -> {
@@ -87,12 +90,11 @@ public class API_Singleton {
         }
     }
 
-    public void getGameData(String url) {
-
-        // remove previous questions on new fetch
+    public void getGameData(String customGameApiLink) {
+        // remove previous questions on new api call
         m_GameData.clear();
 
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, customGameApiLink,
                 response -> {
                     parseJSONGameData(response);
                 },
@@ -124,10 +126,7 @@ public class API_Singleton {
                 }
 
             }
-
-            int i = 0;
             gameDataDownloaded = true;
-
         }   catch (JSONException e) {
             e.printStackTrace();
         }
@@ -152,17 +151,13 @@ public class API_Singleton {
             e.printStackTrace();
         }
     }
-
-
+    // getters
     public boolean isCategoriesDownloaded(){ return categoriesDownloaded; }
     public boolean isGameDataDownloaded() { return gameDataDownloaded; }
+
     public boolean isGameDataResponseCodeOK(){ return gameDataResponseCodeOK; }
-
     public HashMap<String, Integer> getM_categories(){ return m_categories; }
-    public ArrayList<QuizQuestion> getM_GameData(){ return m_GameData; }
 
-    public <T> void addToRequestQueue(Request<T> req) {
-        getRequestQueue().add(req);
-    }
+    public ArrayList<QuizQuestion> getM_GameData(){ return m_GameData; }
 
 }
