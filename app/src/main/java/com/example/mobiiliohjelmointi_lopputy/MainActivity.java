@@ -3,19 +3,12 @@ package com.example.mobiiliohjelmointi_lopputy;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.StringRequest;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.HashMap;
 
@@ -26,25 +19,25 @@ public class MainActivity extends AppCompatActivity
     // get categories from api
     private final String getAllCategoriesLink = "https://opentdb.com/api_category.php";
     // get categories from api category name - id pair
-    private HashMap<String, Integer> m_categories;
+    private HashMap<String, Integer> m_all_categories;
     // default link if settings not changed, 'quick play'
     private  String gameApiLink = "https://opentdb.com/api.php?amount=10";
 
     // Request code acticityforresult (settingsactivity)
     final int REQUESTCODE_SETTINGS = 1;
 
+    API_Singleton m_API;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        m_requestQueue = API_Singleton.getInstance(this).getRequestQueue();
-        m_categories = new HashMap<String, Integer>();
 
-        // set button enabled when categories data is downloaded from api
-        Button settings_Button = (Button)findViewById(R.id.menuSettings_Button);
-        settings_Button.setEnabled(false);
+        // get instance of api and download all categories on start up
+        m_API = API_Singleton.getInstance(this);
+        m_API.getAllCategoriesData();
 
-        getCategoriesToSettings();
+
     }
 
     //Start game activity
@@ -56,53 +49,25 @@ public class MainActivity extends AppCompatActivity
 
     //Start settings activity
     public void settingsButton_clicked(View view) {
-        Intent openSettingsActivityIntent = new Intent( this, SettingsActivity.class );
-        openSettingsActivityIntent.putExtra("ALL_CATEGORIES_HASHMAP", m_categories);
-        startActivityForResult(openSettingsActivityIntent, REQUESTCODE_SETTINGS);
+        if (m_API.isCategoriesDownloaded()){
+            // put categories to next activity
+            m_all_categories = m_API.getM_categories();
+
+            Intent openSettingsActivityIntent = new Intent( this, SettingsActivity.class );
+            openSettingsActivityIntent.putExtra("ALL_CATEGORIES_HASHMAP", m_all_categories);
+            startActivityForResult(openSettingsActivityIntent, REQUESTCODE_SETTINGS);
+        }
+
+
+
     }
 
-    //Start statistics activity
+    //Start weather activity
     public void weatherButton_clicked(View view) {
         Intent openWeatherActivityIntent = new Intent ( this, Weather.class );
         startActivity(openWeatherActivityIntent);
     }
 
-    // Get needed API data on start
-    private void getCategoriesToSettings(){
-        // get categories on json
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, getAllCategoriesLink,
-                response -> {
-                 //   Toast.makeText(this.getApplicationContext(), response, Toast.LENGTH_LONG).show();
-                    parseJsonAllCategories(response);
-                },
-                error -> {
-                    Toast.makeText(this, "Settings not downloaded",Toast.LENGTH_LONG).show();
-                }
-        );
-        if ( m_requestQueue != null ) {
-            API_Singleton.getInstance(this).addToRequestQueue(stringRequest);
-        }
-    }
-
-    private void parseJsonAllCategories(String JSONresponse) {
-        // parse JSON to hash map, where name key and value correspond id
-       try {
-            JSONObject root = new JSONObject(JSONresponse);
-            JSONArray trivia_categories = root.getJSONArray("trivia_categories");
-
-            for (int i = 0; i < trivia_categories.length(); i++) {
-                JSONObject category = trivia_categories.getJSONObject(i);
-                m_categories.put(category.getString("name"), category.getInt("id"));
-            }
-
-
-            Button settings_Button = (Button)findViewById(R.id.menuSettings_Button);
-            settings_Button.setEnabled(true);
-
-        } catch (JSONException e) {
-           e.printStackTrace();
-       }
-    }
 
     // Get result from settings activity (game link for api)
     @Override
