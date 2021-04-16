@@ -11,13 +11,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.StringRequest;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 
@@ -39,7 +33,6 @@ public class GameActivity extends AppCompatActivity {
 
     int m_score = 0;
     boolean m_gameEnded = false;
-    boolean apiCallSuccess = false;
 
     API_Singleton M_API;
 
@@ -65,17 +58,9 @@ public class GameActivity extends AppCompatActivity {
             this.finish();
         }
 
-
-        int i = 0;
-
         this.initializeUI();
-
+        // set first question on UI
         setUIforQuestion(m_gameQuestions.get(indexOfPresentQuestion));
-
-
-    //    Intent intent = getIntent();
-        // fetch game data, start game after data is fetched
-     //   getGameData(intent.getStringExtra("GAME_LINK"));
     }
 
     // First question is set automatically after data is fetched
@@ -83,12 +68,14 @@ public class GameActivity extends AppCompatActivity {
         button_confirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (m_gameEnded || !apiCallSuccess)
+                if (m_gameEnded)
                     finish();
                 else
                     checkAnswer();
 
                 indexOfPresentQuestion++;
+
+                // next question on ui or hide ui for score
                 if (indexOfPresentQuestion < m_gameQuestions.size()) {
                     setUIforQuestion(m_gameQuestions.get(indexOfPresentQuestion));
                 }
@@ -164,73 +151,6 @@ public class GameActivity extends AppCompatActivity {
 
     textView_question.setText(question.getmQuestion());
     textView_questionCount.setText("Question: " + (indexOfPresentQuestion + 1) + " of " + m_gameQuestions.size());
-    }
-
-    // fetch data
-    private void getGameData(String apiLink) {
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, apiLink,
-                response -> {
-                    parseJSON(response);
-                },
-                error -> {
-                    Toast.makeText(this, "Error on downloading game data!'\n'Please try again", Toast.LENGTH_LONG).show();
-                    finish();
-                }
-        );
-        if (m_requestQueue != null) {
-            API_Singleton.getInstance(this).addToRequestQueue(stringRequest);
-        }
-    }
-
-    private void parseJSON(String JSONresponse) {
-        try {
-            JSONObject root = new JSONObject(JSONresponse);
-            // check is response succeed
-            if (root.getInt("response_code") != 0) {
-                apiCallSuccess = false;
-                button_confirm.setText("Fetching game data failed \nNot enough questions on category etc");
-            } else {
-                apiCallSuccess = true;
-            }
-
-            if (apiCallSuccess) {
-                JSONArray questionsArray = root.getJSONArray("results");
-                JSONObject question = questionsArray.getJSONObject(0);
-
-                // Add QuizQuestions to ArrayList
-                for (int i = 0; i < questionsArray.length(); i++) {
-                    parseQuestionAndAddToList(questionsArray.getJSONObject(i));
-                }
-                // Set UI visible and set first question
-                radioGroup.setVisibility(View.VISIBLE);
-                setUIforQuestion(m_gameQuestions.get(indexOfPresentQuestion));
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-            Toast.makeText(this, "halp parsiminen vituiz", Toast.LENGTH_LONG).show();
-        }
-
-        button_confirm.setVisibility(View.VISIBLE);
-    }
-
-    private void parseQuestionAndAddToList(JSONObject JSONQuestion) {
-        try {
-            String correctAnswer = JSONQuestion.getString("correct_answer");
-            String question = JSONQuestion.getString("question");
-
-            // incorrect answers to list --> string []
-            ArrayList<String> wrongAnswersList = new ArrayList<>();
-            JSONArray wrongAnswersArray = JSONQuestion.getJSONArray("incorrect_answers");
-            for (int i = 0; i < wrongAnswersArray.length(); i++) {
-                wrongAnswersList.add(wrongAnswersArray.getString(i));
-            }
-
-            String[] incorrect_answers = wrongAnswersList.toArray(new String[wrongAnswersList.size()]);
-
-            m_gameQuestions.add(new QuizQuestion(question, correctAnswer, incorrect_answers));
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
     }
 
     /* Initialize UI components onCreate */
