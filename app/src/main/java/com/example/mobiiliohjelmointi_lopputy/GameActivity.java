@@ -1,8 +1,10 @@
 package com.example.mobiiliohjelmointi_lopputy;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.icu.util.Calendar;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.util.TypedValue;
 import android.view.View;
 import android.widget.Button;
@@ -12,6 +14,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import com.android.volley.RequestQueue;
 
@@ -75,18 +78,6 @@ public class GameActivity extends AppCompatActivity {
                     finish();
                 else
                     checkAnswer();
-
-                indexOfPresentQuestion++;
-
-                // next question on ui or hide ui for score
-                if (indexOfPresentQuestion < m_gameQuestions.size()) {
-                    setUIforQuestion(m_gameQuestions.get(indexOfPresentQuestion));
-                }
-                else {
-                    endOfGameHideUI();
-                    button_addCalender.setVisibility(View.VISIBLE);
-                    m_gameEnded = true;
-                }
             }
         });
     }
@@ -101,10 +92,86 @@ public class GameActivity extends AppCompatActivity {
         if (m_gameQuestions.get(indexOfPresentQuestion).getmCorrectAnswer().equals(playersAnswer)) {
             m_score++;
             textView_score.setText("Score: " + Integer.toString(m_score));
-            Toast.makeText(GameActivity.this,"CORRECT!",Toast.LENGTH_SHORT).show();
+
+            flashCorrectAnswer(selectedRadioButton); // highlight correct answer
         } else {
-            Toast.makeText(GameActivity.this,"WRONG!\nCorrect answer:\n" + m_gameQuestions.get(indexOfPresentQuestion).getmCorrectAnswer(),Toast.LENGTH_SHORT).show();
+            flashWrongAndCorrectAnswer(selectedRadioButton);
         }
+    }
+
+    public void flashWrongAndCorrectAnswer(RadioButton wrongAnswerRadioButton){
+
+        // find radio button for correct answer
+        RadioButton correctAnswerRadioButton;
+
+        if (m_gameQuestions.get(indexOfPresentQuestion).getmCorrectAnswer().equals(radioButton1.getText()))
+            correctAnswerRadioButton = radioButton1;
+        else if (m_gameQuestions.get(indexOfPresentQuestion).getmCorrectAnswer().equals(radioButton2.getText()))
+            correctAnswerRadioButton = radioButton2;
+        else if (m_gameQuestions.get(indexOfPresentQuestion).getmCorrectAnswer().equals(radioButton3.getText()))
+            correctAnswerRadioButton = radioButton3;
+        else
+            correctAnswerRadioButton = radioButton4;
+
+
+        new CountDownTimer(2000, 1000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                correctAnswerRadioButton.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.correct));
+                wrongAnswerRadioButton.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.wrong));
+                button_confirm.setClickable(false);
+            }
+
+            @Override
+            public void onFinish() {
+                correctAnswerRadioButton.setBackgroundColor(Color.TRANSPARENT);
+                wrongAnswerRadioButton.setBackgroundColor(Color.TRANSPARENT);
+                button_confirm.setClickable(true);
+
+
+                indexOfPresentQuestion++;
+
+                // next question if available
+                if (indexOfPresentQuestion < m_gameQuestions.size()) {
+                    setUIforQuestion(m_gameQuestions.get(indexOfPresentQuestion));
+                }
+                else {
+                    endOfGameHideUI();
+                    button_addCalender.setVisibility(View.VISIBLE);
+                    m_gameEnded = true;
+                }
+            }
+
+        }.start();
+    }
+
+    public void flashCorrectAnswer(RadioButton radiobutton) {
+        new CountDownTimer(2000, 1000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                radiobutton.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.correct));
+                button_confirm.setClickable(false);
+            }
+
+            @Override
+            public void onFinish() {
+                button_confirm.setClickable(true);
+
+                // index for next question
+                indexOfPresentQuestion++;
+                // answer highligh off
+                radiobutton.setBackgroundColor(Color.TRANSPARENT);
+                // next question if available
+                if (indexOfPresentQuestion < m_gameQuestions.size()) {
+                    setUIforQuestion(m_gameQuestions.get(indexOfPresentQuestion));
+                }
+                else {
+                    endOfGameHideUI();
+                    button_addCalender.setVisibility(View.VISIBLE);
+                    m_gameEnded = true;
+                }
+            }
+        }.start();
     }
 
     private void endOfGameHideUI(){
@@ -119,7 +186,7 @@ public class GameActivity extends AppCompatActivity {
         textView_question.setText("");
         textView_score.setText("");
     }
-
+/*
     public void addListenerRadioGroup() {
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
@@ -128,7 +195,7 @@ public class GameActivity extends AppCompatActivity {
             }
         });
     }
-
+*/
     private void setUIforQuestion(QuizQuestion question) {
        /* set first radio button selected to
          avoid clicking confirm with unselected input */
@@ -139,8 +206,8 @@ public class GameActivity extends AppCompatActivity {
         // show only 2 answer option
         radioButton3.setVisibility(View.GONE);
         radioButton4.setVisibility(View.GONE);
-        radioButton1.setText("True");
-        radioButton2.setText("False");
+        radioButton1.setText(getResources().getString(R.string.answerOptionTrue));
+        radioButton2.setText(getResources().getString(R.string.answerOptionFalse));
     } else {
         // show all options
         radioButton3.setVisibility(View.VISIBLE);
@@ -156,8 +223,8 @@ public class GameActivity extends AppCompatActivity {
     textView_question.setText(question.getmQuestion());
     textView_questionCount.setText("Question: " + (indexOfPresentQuestion + 1) + " of " + m_gameQuestions.size());
     }
-
     /* Initialize UI components onCreate */
+
     private void initializeUI() {
         textView_question = (TextView)findViewById(R.id.text_view_question);
         textView_score = (TextView)findViewById(R.id.text_view_score);
@@ -177,8 +244,7 @@ public class GameActivity extends AppCompatActivity {
     }
 
     public void addResultCalender(View view) {
-        Toast.makeText(this, "add calender ckilds", Toast.LENGTH_SHORT).show();
-
+        // set via intent
         Calendar cal = Calendar.getInstance();
         Intent intent = new Intent(Intent.ACTION_EDIT);
         intent.setType("vnd.android.cursor.item/event");
@@ -187,7 +253,7 @@ public class GameActivity extends AppCompatActivity {
         intent.putExtra("title", "Game result");
         intent.putExtra("description", "Score: " + m_score + " / " + m_gameQuestions.size());
         startActivity(intent);
-        finish();
-
+        // return main menu after intent
+        this.finish();
     }
 }

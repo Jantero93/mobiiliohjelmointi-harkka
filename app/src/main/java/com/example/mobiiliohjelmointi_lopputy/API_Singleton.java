@@ -133,16 +133,29 @@ public class API_Singleton {
         }
     }
 
+    private String unEncode(String string){
+        // kysymyksissä aika paljon encode juttuja
+        string = string.replace("&#039;", "'");
+        string = string.replace("&quot;", "\"");
+        return string;
+    }
+
     private void parseQuestionAndAddToList(JSONObject JSONQuestion) {
         try {
             String correctAnswer = JSONQuestion.getString("correct_answer");
+            correctAnswer = unEncode(correctAnswer);
+
             String question = JSONQuestion.getString("question");
+            question = unEncode(question);
+
 
             // incorrect answers to list --> string []
             ArrayList<String> wrongAnswersList = new ArrayList<>();
             JSONArray wrongAnswersArray = JSONQuestion.getJSONArray("incorrect_answers");
             for (int i = 0; i < wrongAnswersArray.length(); i++) {
-                wrongAnswersList.add(wrongAnswersArray.getString(i));
+                String answer = wrongAnswersArray.getString(i);
+                answer = unEncode(answer);
+                wrongAnswersList.add(answer);
             }
 
             String[] incorrect_answers = wrongAnswersList.toArray(new String[wrongAnswersList.size()]);

@@ -44,12 +44,12 @@ public class MainActivity extends AppCompatActivity
 
     //Start game activity
     public void playButton_clicked(View view) {
-        if (m_API.isGameDataDownloaded()) {
+        if (m_API.isGameDataDownloaded() && m_API.isGameDataResponseCodeOK()) {
             Intent openGameActivityIntent = new Intent(this, GameActivity.class);
             //  openGameActivityIntent.putExtra("GAME_LINK", gameApiLink);
             startActivity(openGameActivityIntent);
         } else{
-            Toast.makeText(this, "Game Data not download, try again", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Game Data not downloaded or not enough question on category, try again", Toast.LENGTH_LONG).show();
         }
     }
 

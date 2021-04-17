@@ -16,4 +16,6 @@
     <string name="ToastCorrectAnswer">Correct</string>
     <string name="QuizConfirmButton">Confirm</string>
     <string name="QuizCalender">Add result to calender</string>
+    <string name="answerOptionTrue">True</string>
+    <string name="answerOptionFalse">False</string>
 </resources>
