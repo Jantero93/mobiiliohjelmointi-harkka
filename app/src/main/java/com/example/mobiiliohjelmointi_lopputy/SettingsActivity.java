@@ -16,12 +16,12 @@ import java.util.Arrays;
 import java.util.HashMap;
 
 public class SettingsActivity extends AppCompatActivity {
-    private int m_amount = 1;
+
     private String m_category = "";
     private String m_difficulty = "Any Difficulty";
     private String m_type = "Any Type";
     private HashMap<String, Integer> m_all_categories;
-    private String generatedLink = "";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +39,36 @@ public class SettingsActivity extends AppCompatActivity {
         initializeAllClickListenersOnStart();
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle outState){
+        outState.putString("DIFFICULTY",m_difficulty);
+        outState.putString("CATEGORY",m_category);
+        outState.putString("TYPE",m_type);
+        outState.putSerializable("ALL_CATEGORIES", m_all_categories);
+
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void onRestoreInstanceState(Bundle savedInstanceState) {
+        if (savedInstanceState != null) {
+            m_all_categories = (HashMap<String, Integer>) savedInstanceState.getSerializable("ALL_CATEGORIES");
+            m_type = savedInstanceState.getString("TYPE");
+            m_difficulty = savedInstanceState.getString("DIFFICULTY");
+            m_category = savedInstanceState.getString("CATEGORY");
+        }
+
+        TextView category = (TextView)findViewById(R.id.selectedItemCate_TextView);
+        category.setText(m_category);
+
+        TextView diff = (TextView)findViewById(R.id.selectedDifficultyItem_TextView);
+        diff.setText(m_difficulty);
+
+        TextView type = (TextView)findViewById(R.id.selectedTypeItem_TextView);
+        type.setText(m_type);
+
+        super.onRestoreInstanceState(savedInstanceState);
+    }
 
 
     //generate api link, make api call and return to main menu
