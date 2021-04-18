@@ -1,79 +1,91 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/gameLayout"
+    android:id="@+id/ScrollView01"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/gradient_background"
-    android:padding="16dp">
+    android:fillViewport="true"
+    android:scrollbars="none" >
 
-    <TextView
-        android:id="@+id/text_view_score"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="@color/white" />
-
-    <TextView
-        android:id="@+id/text_view_question_count"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/text_view_score"
-        android:textColor="@color/white" />
-
-    <TextView
-        android:id="@+id/text_view_question"
+    <RelativeLayout
+        android:id="@+id/gameLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@id/radio_group"
-        android:layout_marginBottom="16dp"
-        android:textAlignment="center"
-        android:textColor="@color/white"
-        android:textSize="20sp" />
+        android:background="@drawable/gradient_background"
+        android:padding="16dp">
 
-    <RadioGroup
-        android:id="@+id/radio_group"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerVertical="true">
+        <TextView
+            android:id="@+id/text_view_score"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white" />
 
-        <RadioButton
-            android:id="@+id/radio_button1"
-            android:layout_width="396dp"
-            android:layout_height="wrap_content" />
+        <TextView
+            android:id="@+id/text_view_question_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/text_view_score"
+            android:textColor="@color/white" />
 
-        <RadioButton
-            android:id="@+id/radio_button2"
+        <TextView
+            android:id="@+id/text_view_question"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_above="@id/radio_group"
+            android:layout_marginBottom="16dp"
+            android:textAlignment="center"
+            android:textColor="@color/white"
+            android:textSize="20sp" />
 
-        <RadioButton
-            android:id="@+id/radio_button3"
+        <RadioGroup
+            android:id="@+id/radio_group"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true">
+
+            <RadioButton
+                android:id="@+id/radio_button1"
+                android:layout_width="396dp"
+                android:layout_height="wrap_content" />
+
+            <RadioButton
+                android:id="@+id/radio_button2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <RadioButton
+                android:id="@+id/radio_button3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <RadioButton
+                android:id="@+id/radio_button4"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </RadioGroup>
+
+        <Button
+            android:id="@+id/button_confirm_next"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_below="@id/radio_group"
+            android:layout_marginTop="16dp"
+            android:maxWidth="100dp"
+            android:onClick="confirmButtonClicked"
+            android:text="@string/QuizConfirmButton" />
 
-        <RadioButton
-            android:id="@+id/radio_button4"
+        <Button
+            android:id="@+id/button_add_result_calender"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-    </RadioGroup>
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="200sp"
+            android:maxWidth="100dp"
+            android:onClick="addResultCalender"
+            android:text="@string/QuizCalender" />
 
-    <Button
-        android:id="@+id/button_confirm_next"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/radio_group"
-        android:layout_marginTop="16dp"
-        android:onClick="confirmButtonClicked"
-        android:text="@string/QuizConfirmButton" />
+    </RelativeLayout>
 
-    <Button
-        android:id="@+id/button_add_result_calender"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="200sp"
-        android:onClick="addResultCalender"
-        android:text="@string/QuizCalender" />
-
-</RelativeLayout>
+</ScrollView>

@@ -239,6 +239,8 @@ public class GameActivity extends AppCompatActivity {
 
         button_addCalender.setVisibility(View.GONE);
 
+        textView_score.setText("Score: 0");
+
         // initialize all listeners
         addListenerOnConfirmButton();
     }

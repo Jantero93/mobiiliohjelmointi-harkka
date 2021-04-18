@@ -7,51 +7,72 @@
     android:background="@drawable/gradient_background"
     tools:context=".MainActivity">
 
-    <TextView
-        android:id="@+id/mainMenuHeader_TextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="64dp"
-        android:fontFamily="monospace"
-        android:text="@string/mainMenu_header"
-        android:textColor="#DDDDDD"
-        android:textSize="36sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
-        android:id="@+id/menuPlay_Button"
-        android:layout_width="185dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="261dp"
-        android:onClick="playButton_clicked"
-        android:text="@string/mainMenuButton_play"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <Button
-        android:id="@+id/menuSettings_Button"
-        android:layout_width="185dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
-        android:onClick="settingsButton_clicked"
-        android:text="@string/mainMenuButton_settings"
-        app:icon="@android:drawable/ic_menu_preferences"
-        app:iconTint="#FFFFFF"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/menuPlay_Button" />
-
-    <Button
-        android:id="@+id/menuWeather_Button"
-        android:layout_width="185dp"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="105dp"
-        android:onClick="weatherButton_clicked"
-        android:text="@string/mainMenuButton_weather"
+    <ScrollView
+        android:id="@+id/scrollView4"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="2dp"
+        android:layout_marginBottom="2dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:width="200dp"
+            android:orientation="vertical">
+
+
+            <TextView
+                android:id="@+id/mainMenuHeader_TextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="100dp"
+                android:fontFamily="monospace"
+                android:gravity="center"
+                android:text="@string/mainMenu_header"
+                android:textAlignment="center"
+                android:textColor="#DDDDDD"
+                android:textSize="30sp" />
+
+            <Button
+                android:id="@+id/menuPlay_Button"
+                android:layout_width="252dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="100dp"
+                android:gravity="center"
+                android:maxWidth="50dp"
+                android:onClick="playButton_clicked"
+                android:text="@string/mainMenuButton_play" />
+
+            <Button
+                android:id="@+id/menuSettings_Button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="50dp"
+                android:gravity="center"
+                android:onClick="settingsButton_clicked"
+                android:text="@string/mainMenuButton_settings"
+                app:icon="@android:drawable/ic_menu_preferences"
+                app:iconTint="#FFFFFF" />
+
+            <Button
+                android:id="@+id/menuWeather_Button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                android:gravity="center"
+                android:onClick="weatherButton_clicked"
+                android:text="@string/mainMenuButton_weather" />
+
+        </LinearLayout>
+    </ScrollView>
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>
